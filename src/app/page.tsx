@@ -1,41 +1,91 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+const announcements = [
+  "Strawberry Festival preparations underway",
+  "Municipal services schedule updated",
+  "Public advisory on road maintenance",
+];
+
 export default function HomePage() {
+  const [index, setIndex] = useState(0);
+
+  // Simple carousel autoplay
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % announcements.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-green-700 to-green-600 text-white">
-        <div className="max-w-6xl mx-auto px-6 py-20">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Municipality of La Trinidad, Benguet
+    <main className="min-h-screen bg-white text-gray-800">
+      {/* HERO / PARALLAX */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-green-100 via-green-50 to-white" />
+
+        <div className="relative max-w-6xl mx-auto px-6 py-24">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-green-800">
+            Municipality of La Trinidad
           </h1>
-          <p className="mt-4 text-lg md:text-xl text-green-100 max-w-2xl">
-            Official Local Government Unit Website providing public information,
-            announcements, and services for our constituents.
+          <p className="mt-4 text-lg md:text-xl max-w-2xl text-green-700">
+            The heart of Benguet — delivering transparent governance,
+            community-centered services, and sustainable development.
           </p>
         </div>
       </section>
 
-      {/* Announcements */}
-      <section className="max-w-6xl mx-auto px-6 py-14 w-full">
-        <div className="mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800">
+      {/* GLASS CARDS */}
+      <section className="max-w-6xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              title: "Transparency",
+              desc: "Access official reports, ordinances, and public disclosures.",
+            },
+            {
+              title: "Public Services",
+              desc: "Explore municipal services and citizen programs.",
+            },
+            {
+              title: "Community",
+              desc: "Learn about barangays, events, and local initiatives.",
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="backdrop-blur-md bg-white/60 border border-white/40
+                         rounded-2xl p-6 shadow-lg hover:scale-[1.02]
+                         transition-transform"
+            >
+              <h3 className="text-xl font-semibold text-green-800">
+                {item.title}
+              </h3>
+              <p className="mt-3 text-gray-600">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CAROUSEL */}
+      <section className="bg-green-50">
+        <div className="max-w-6xl mx-auto px-6 py-16">
+          <h2 className="text-2xl font-bold text-green-800 mb-6">
             Latest Announcements
           </h2>
-          <p className="text-gray-500 text-sm mt-1">
-            Official notices and updates from the LGU
-          </p>
-        </div>
 
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-          <p className="text-gray-600">
-            No announcements available at the moment.  
-            Updates will be posted here by the LGU administration.
-          </p>
+          <div className="relative overflow-hidden rounded-xl bg-white shadow-md p-8">
+            <p className="text-lg text-gray-700 transition-all duration-500">
+              {announcements[index]}
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Quick Links */}
-      <section className="max-w-6xl mx-auto px-6 py-14 w-full">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-8">
+      {/* QUICK LINKS */}
+      <section className="max-w-6xl mx-auto px-6 py-16">
+        <h2 className="text-2xl font-bold text-green-800 mb-8">
           Quick Access
         </h2>
 
@@ -44,30 +94,31 @@ export default function HomePage() {
             "Municipal Officials",
             "Offices & Departments",
             "Barangays",
-            "Transparency & Reports",
+            "Transparency Reports",
           ].map((item) => (
             <div
               key={item}
-              className="bg-white rounded-xl border shadow-sm p-6 cursor-pointer
-                         hover:shadow-md hover:border-green-600 transition"
+              className="bg-white rounded-xl border shadow-sm p-6
+                         hover:border-green-400 hover:shadow-md
+                         transition cursor-pointer"
             >
               <p className="font-medium text-gray-700">{item}</p>
               <p className="text-sm text-gray-500 mt-2">
-                View information and details
+                View detailed information
               </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="mt-auto bg-gray-800 text-gray-300">
-        <div className="max-w-6xl mx-auto px-6 py-8 text-sm flex flex-col md:flex-row justify-between gap-4">
+      {/* FOOTER */}
+      <footer className="bg-green-100 border-t">
+        <div className="max-w-6xl mx-auto px-6 py-8 text-sm text-green-900 flex flex-col md:flex-row justify-between gap-4">
           <p>
             © {new Date().getFullYear()} Municipality of La Trinidad, Benguet.
             All rights reserved.
           </p>
-          <p className="text-gray-400">
+          <p className="text-green-700">
             An official government website
           </p>
         </div>
