@@ -4,18 +4,18 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-md bg-green-700/90 border-b border-green-600">
-      <nav className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo / Title */}
+    <header className="sticky top-0 z-50 bg-green-600/90 backdrop-blur-md border-b border-green-700/30">
+      <nav className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
+        {/* Brand */}
         <Link
           href="/"
-          className="font-bold text-lg tracking-wide text-white hover:text-green-100 transition"
+          className="font-semibold text-white tracking-wide"
         >
           La Trinidad LGU
         </Link>
 
-        {/* Navigation Links */}
-        <ul className="hidden md:flex gap-6 text-sm font-medium text-white">
+        {/* Links */}
+        <ul className="hidden md:flex gap-6 text-sm font-medium text-white/90">
           {[
             { href: "/about", label: "About" },
             { href: "/officials", label: "Officials" },
@@ -27,7 +27,7 @@ export default function Navbar() {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="hover:text-green-200 transition-colors"
+                className="hover:text-white transition"
               >
                 {item.label}
               </Link>
