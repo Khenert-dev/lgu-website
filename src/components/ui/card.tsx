@@ -1,8 +1,19 @@
 import { ReactNode } from "react"
+import { cn } from "../../lib/utils"
 
-export default function Card({ children }: { children: ReactNode }) {
+type CardProps = {
+  children: ReactNode
+  className?: string
+}
+
+export default function Card({ children, className }: CardProps) {
   return (
-    <div className="glass glass-hover rounded-2xl p-10">
+    <div
+      className={cn(
+        "rounded-2xl bg-white/70 backdrop-blur-md border border-slate-200 p-6 shadow-sm",
+        className
+      )}
+    >
       {children}
     </div>
   )

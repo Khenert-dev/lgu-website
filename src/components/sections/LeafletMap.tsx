@@ -4,24 +4,36 @@ import { useEffect, useRef } from "react"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 
+const BARANGAYS = [
+  { name: "Poblacion", coords: [16.456, 120.590] },
+  { name: "Balili", coords: [16.468, 120.596] },
+  { name: "Buyagan", coords: [16.452, 120.603] },
+]
+
 export default function LeafletMap() {
-  const mapRef = useRef<HTMLDivElement | null>(null)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!mapRef.current) return
+    if (!ref.current) return
 
-    const map = L.map(mapRef.current).setView([16.45, 120.59], 13)
+    const map = L.map(ref.current, {
+      center: [16.45, 120.59],
+      zoom: 13,
+      scrollWheelZoom: false,
+    })
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map)
 
-    L.marker([16.45, 120.59])
-      .addTo(map)
-      .bindPopup("La Trinidad")
+    BARANGAYS.forEach((b) => {
+      L.marker(b.coords as [number, number])
+        .addTo(map)
+        .bindPopup(b.name)
+    })
 
     return () => {
       map.remove()
     }
   }, [])
 
-  return <div ref={mapRef} className="h-full w-full" />
+  return <div ref={ref} className="h-full w-full" />
 }

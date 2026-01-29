@@ -1,33 +1,22 @@
 "use client"
 
-import { useEffect, useState } from "react"
-
 const stats = [
-  { label: "Barangays", value: 16 },
-  { label: "Population", value: 137404 },
-  { label: "Municipal Offices", value: 18 },
-  { label: "Public Services", value: 42 },
+  { label: "Barangays", value: "16" },
+  { label: "Population", value: "140,000+" },
+  { label: "Province Capital", value: "Benguet" },
+  { label: "Known For", value: "Strawberries" },
 ]
 
 export default function Stats() {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    setVisible(true)
-  }, [])
-
   return (
-    <section className="max-w-7xl mx-auto px-8 py-24">
-      <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+    <section className="bg-white py-20">
+      <div className="max-w-7xl mx-auto px-8 grid md:grid-cols-4 gap-8 text-center">
         {stats.map((s) => (
-          <div
-            key={s.label}
-            className="glass rounded-2xl p-8 text-center glass-hover"
-          >
-            <div className="text-4xl font-bold text-green-700">
-              {visible ? s.value.toLocaleString() : 0}
-            </div>
-            <p className="mt-2 text-slate-600 text-sm">
+          <div key={s.label}>
+            <p className="text-4xl font-bold text-green-700">
+              {s.value}
+            </p>
+            <p className="mt-2 text-slate-600">
               {s.label}
             </p>
           </div>
