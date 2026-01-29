@@ -1,22 +1,35 @@
 "use client"
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
+import { useEffect, useRef } from "react"
+import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 
-const center: [number, number] = [16.45, 120.59]
-
 export default function LeafletMap() {
+  const mapRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!mapRef.current) return
+
+    const map = L.map(mapRef.current).setView([16.45, 120.59], 13)
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors",
+    }).addTo(map)
+
+    L.marker([16.45, 120.59])
+      .addTo(map)
+      .bindPopup("La Trinidad")
+      .openPopup()
+
+    return () => {
+      map.remove()
+    }
+  }, [])
+
   return (
-    <MapContainer
-      center={center}
-      zoom={13}
-      scrollWheelZoom={false}
+    <div
+      ref={mapRef}
       style={{ height: "100%", width: "100%" }}
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <Marker position={center}>
-        <Popup>La Trinidad</Popup>
-      </Marker>
-    </MapContainer>
+    />
   )
 }
