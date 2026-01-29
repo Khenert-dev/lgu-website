@@ -1,28 +1,33 @@
 export default function OfficesPage() {
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-8">Offices & Departments</h1>
+    <div className="max-w-6xl mx-auto px-6 py-20 space-y-10">
+      <h1 className="text-4xl font-bold text-green-700">
+        Municipal Offices
+      </h1>
 
-      <div className="space-y-4">
-        {[
-          "Municipal Planning and Development Office",
-          "Municipal Health Office",
-          "Municipal Social Welfare and Development Office",
-          "Municipal Engineering Office",
-        ].map((office, index) => (
-          <div
-            key={index}
-            className="bg-white border rounded-xl p-6 shadow-sm"
-          >
-            <h2 className="font-semibold text-lg text-gray-800">
-              {office}
-            </h2>
-            <p className="text-gray-500 mt-2">
-              Description and contact information will be available here.
-            </p>
-          </div>
-        ))}
+      <div className="overflow-x-auto bg-white rounded-xl shadow-sm">
+        <table className="w-full border-collapse text-base">
+          <thead className="bg-slate-100">
+            <tr>
+              <th className="p-4 text-left font-semibold">Office</th>
+              <th className="p-4 text-left font-semibold">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ["Mayor’s Office", "Executive administration"],
+              ["Municipal Treasurer", "Revenue and finance"],
+              ["Municipal Planning", "Development planning"],
+              ["Health Office", "Public health services"],
+            ].map(([office, desc]) => (
+              <tr key={office} className="border-t">
+                <td className="p-4">{office}</td>
+                <td className="p-4 text-slate-600">{desc}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-    </main>
-  );
+    </div>
+  )
 }
