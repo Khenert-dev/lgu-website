@@ -4,7 +4,7 @@ const OFFICIALS = [
   {
     role: "Municipal Mayor",
     name: "Roderick C. Awingan",
-    img: "https://via.placeholder.com/300x300?text=Mayor",
+    img: "https://www.businessinsider.com/fun-facts-shrek-movie-2019-2",
   },
   {
     role: "Vice Mayor",
