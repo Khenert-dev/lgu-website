@@ -2,7 +2,7 @@
 
 const images = [
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/5/57/La_Trinidad_Strawberry_Farm.jpg",
+    src: "/images/Strawberry.png",
     caption: "La Trinidad Strawberry Farm",
   },
   {

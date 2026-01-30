@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Strawberry Festival 2025",
+    "description": "La Trinidad celebrates its annual Strawberry Festival showcasing agriculture, culture, and tourism.",
+    "image": "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=1400&q=80",
+    "date": "2025-01-15"
+  },
+  {
+    "id": 2,
+    "title": "Public Market Improvement",
+    "description": "Modernization of La Trinidad Public Market improves sanitation and accessibility.",
+    "image": "https://images.unsplash.com/photo-1598514982205-f4a77c2e7c31?auto=format&fit=crop&w=1400&q=80",
+    "date": "2025-02-10"
+  },
+  {
+    "id": 3,
+    "title": "Barangay Infrastructure Projects",
+    "description": "Road rehabilitation and drainage upgrades ongoing across barangays.",
+    "image": "https://images.unsplash.com/photo-1602479185209-7f99f6cbe5e3?auto=format&fit=crop&w=1400&q=80",
+    "date": "2025-03-02"
+  },
+  {
+    "id": 4,
+    "title": "Youth & Education Programs",
+    "description": "LGU partners with Benguet State University for youth development initiatives.",
+    "image": "https://images.unsplash.com/photo-1585144570286-60c8ad10f20b?auto=format&fit=crop&w=1400&q=80",
+    "date": "2025-04-01"
+  }
+]

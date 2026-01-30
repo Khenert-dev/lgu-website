@@ -22,14 +22,37 @@ const slides = [
   },
 ]
 
+const fbPages = [
+  {
+    name: "LGU La Trinidad",
+    href: "https://www.facebook.com/",
+    logo: "/logos/lgu.png",
+  },
+  {
+    name: "La Trinidad Tourism",
+    href: "https://www.facebook.com/",
+    logo: "/logos/tourism.png",
+  },
+  {
+    name: "La Trinidad PIO",
+    href: "https://www.facebook.com/",
+    logo: "/logos/pio.png",
+  },
+]
+
 export default function HomePage() {
   const [index, setIndex] = useState(0)
   const [y, setY] = useState(0)
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setY(window.scrollY * 0.35)
     window.addEventListener("scroll", onScroll)
     return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  useEffect(() => {
+    setVisible(true)
   }, [])
 
   useEffect(() => {
@@ -40,41 +63,55 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div>
+    <div className="relative overflow-hidden">
+      <div className="bg-parallax" />
+      <div className="bg-noise" />
+
       {/* ================= HERO ================= */}
-      <section className="relative h-[85vh] overflow-hidden">
+      <section className="relative h-[90vh] overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center scale-110"
+          className="absolute inset-0 bg-cover bg-center scale-110 will-change-transform"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee')",
+            backgroundImage: "url('/images/Strawberry.png')",
             transform: `translateY(${y}px)`,
           }}
         />
 
-        <div className="absolute inset-0 bg-white/65 backdrop-blur-md" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-green-900/20 to-black/50" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-8 h-full flex items-center">
-          <div className="max-w-3xl space-y-8 fade-in">
-            <h1 className="text-5xl md:text-6xl font-bold text-green-700">
-              Municipality of La Trinidad
+          <div
+            className={`
+              max-w-3xl space-y-8 p-12 rounded-3xl
+              glass glass-hover
+              shadow-2xl
+              transition-all duration-1000
+              ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
+            `}
+          >
+            <span className="inline-block px-4 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+              Official Municipality Portal
+            </span>
+
+            <h1 className="text-5xl md:text-6xl font-bold text-green-900 leading-tight">
+              Municipality of <br /> La Trinidad
             </h1>
 
-            <p className="text-xl text-slate-700">
+            <p className="text-xl text-slate-800 leading-relaxed">
               {slides[index].desc}
             </p>
 
             <Button>Explore Public Services</Button>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 pt-4">
               {slides.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setIndex(i)}
-                  className={`h-3 w-3 rounded-full transition ${
+                  className={`h-3 w-3 rounded-full transition-all ${
                     i === index
-                      ? "bg-green-700"
-                      : "bg-slate-400 hover:bg-green-500"
+                      ? "bg-green-700 scale-125"
+                      : "bg-green-300 hover:bg-green-500"
                   }`}
                   aria-label={`Slide ${i + 1}`}
                 />
@@ -82,40 +119,79 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
-        <img
-          src="https://images.unsplash.com/photo-1523413651479-597eb2da0ad6"
-          alt=""
-          className="hidden lg:block absolute right-16 bottom-16 w-72 rounded-2xl shadow-2xl floating"
-        />
       </section>
 
       {/* ================= SERVICES ================= */}
-      <section className="max-w-7xl mx-auto px-8 py-32 grid gap-10 md:grid-cols-3">
-        {[
-          ["Transparency", "Open records, ordinances, disclosures."],
-          ["Public Services", "Permits, certificates, citizen services."],
-          ["Community", "Barangays, programs, local initiatives."],
-        ].map(([title, desc]) => (
-          <Card key={title}>
-            <h3 className="text-2xl font-semibold text-green-700">
-              {title}
-            </h3>
-            <p className="mt-4 text-slate-600 text-lg">
-              {desc}
-            </p>
-          </Card>
-        ))}
+      <section className="relative max-w-7xl mx-auto px-8 py-36">
+        <div className="grid gap-10 md:grid-cols-3">
+          {[
+            ["Transparency", "Open records, ordinances, disclosures."],
+            ["Public Services", "Permits, certificates, citizen services."],
+            ["Community", "Barangays, programs, local initiatives."],
+          ].map(([title, desc]) => (
+            <Card key={title} className="p-10 text-center">
+              <h3 className="text-2xl font-semibold text-green-800">
+                {title}
+              </h3>
+              <p className="mt-4 text-slate-700 text-lg">
+                {desc}
+              </p>
+            </Card>
+          ))}
+        </div>
       </section>
 
-      {/* ================= STATS DASHBOARD ================= */}
       <Stats />
-
-      {/* ================= BARANGAY MAP ================= */}
       <BarangayMap />
-
-      {/* ================= GALLERY ================= */}
       <Gallery />
+
+      {/* ================= FB LINKS ================= */}
+      <section className="relative py-24">
+        <div className="max-w-7xl mx-auto px-8 text-center">
+          <h2 className="text-3xl font-bold text-green-800 mb-10">
+            Official Facebook Pages
+          </h2>
+
+          <div className="flex flex-wrap justify-center gap-10">
+            {fbPages.map((p) => (
+              <a
+                key={p.name}
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  group
+                  flex flex-col items-center gap-4
+                  transition-transform duration-300
+                  hover:-translate-y-2
+                "
+              >
+                <div
+                  className="
+                    h-24 w-24
+                    rounded-3xl
+                    border border-green-300/40
+                    bg-white/70 backdrop-blur-xl
+                    shadow-lg
+                    flex items-center justify-center
+                    group-hover:shadow-2xl
+                  "
+                >
+                  <img
+                    src={p.logo}
+                    alt={p.name}
+                    className="h-14 w-14 object-contain"
+                  />
+                </div>
+
+                <span className="text-sm font-semibold text-green-800">
+                  {p.name}
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
