@@ -1,59 +1,68 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import Card from "@/components/ui/card"
+import { getAboutContent } from "@/lib/about"
 
 export default function AboutPage() {
+  const [data, setData] = useState<any>(null)
+
+  useEffect(() => {
+    getAboutContent().then(setData)
+  }, [])
+
+  if (!data) return null
+
   return (
-    <div className="max-w-5xl mx-auto px-6 py-24 space-y-16">
-      {/* Page Header */}
-      <header className="space-y-4">
-        <h1 className="text-4xl md:text-5xl font-bold text-green-800 tracking-tight">
-          About the Municipality
-        </h1>
-        <p className="text-lg text-slate-600 max-w-3xl">
-          Learn about the history, role, and identity of the Municipality of
-          La Trinidad, the heart of Benguet Province.
-        </p>
-      </header>
+    <section className="relative">
+      <div className="absolute inset-0 bg-gradient-to-b from-green-50 via-white to-green-50 pointer-events-none" />
 
-      {/* Overview */}
-      <Card className="glass glass-hover p-10">
-        <h2 className="text-2xl font-semibold text-green-700 mb-4">
-          Overview
-        </h2>
-        <p className="text-lg leading-relaxed text-slate-700">
-          La Trinidad is the capital municipality of Benguet Province and
-          serves as the administrative, economic, and cultural center of the
-          province. It is widely recognized for its agricultural heritage,
-          particularly as the Strawberry Capital of the Philippines.
-        </p>
-      </Card>
+      <div className="relative max-w-6xl mx-auto px-8 py-32 space-y-24">
+        <header className="max-w-4xl space-y-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-green-900">
+            Municipality of La Trinidad
+          </h1>
+          <p className="text-lg text-slate-600">
+            {data.overview}
+          </p>
+        </header>
 
-      {/* Role & Governance */}
-      <Card className="glass glass-hover p-10">
-        <h2 className="text-2xl font-semibold text-green-700 mb-4">
-          Role in the Province
-        </h2>
-        <p className="text-lg leading-relaxed text-slate-700">
-          As the seat of the provincial government, La Trinidad hosts key
-          institutions and public offices that support governance, public
-          services, and regional development. The municipality plays a vital
-          role in policy coordination, economic growth, and service delivery
-          for the people of Benguet.
-        </p>
-      </Card>
+        <Card className="p-12">
+          <h2 className="text-2xl font-semibold text-green-800 mb-4">
+            Role in the Province
+          </h2>
+          <p className="text-slate-700">
+            {data.role}
+          </p>
+        </Card>
 
-      {/* Community & Identity */}
-      <Card className="glass glass-hover p-10">
-        <h2 className="text-2xl font-semibold text-green-700 mb-4">
-          Community and Identity
-        </h2>
-        <p className="text-lg leading-relaxed text-slate-700">
-          Home to diverse communities and vibrant barangays, La Trinidad
-          values transparency, citizen participation, and sustainable
-          development. The municipality is committed to preserving its
-          cultural heritage while embracing innovation for future
-          generations.
-        </p>
-      </Card>
-    </div>
+        <div className="grid gap-10 md:grid-cols-3">
+          <Card className="p-10">
+            <h3 className="text-xl font-semibold text-green-800 mb-4">
+              Mission
+            </h3>
+            <p>{data.mission}</p>
+          </Card>
+
+          <Card className="p-10">
+            <h3 className="text-xl font-semibold text-green-800 mb-4">
+              Vision
+            </h3>
+            <p>{data.vision}</p>
+          </Card>
+
+          <Card className="p-10">
+            <h3 className="text-xl font-semibold text-green-800 mb-4">
+              Core Values
+            </h3>
+            <ul className="list-disc pl-5 space-y-2">
+              {data.values.map((v: string) => (
+                <li key={v}>{v}</li>
+              ))}
+            </ul>
+          </Card>
+        </div>
+      </div>
+    </section>
   )
 }

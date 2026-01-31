@@ -6,20 +6,20 @@ const images = [
     caption: "La Trinidad Strawberry Farm",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/1/1f/La_Trinidad_Benguet_Panorama.jpg",
+    src: "/images/latri.png",
     caption: "Panoramic View of La Trinidad",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/6/6d/La_Trinidad_Public_Market.jpg",
+    src: "/images/market.png",
     caption: "La Trinidad Public Market",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Benguet_State_University_Main_Gate.jpg",
+    src: "images/bsu.png",
     caption: "Benguet State University (Km 5)",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/8/89/Stobosa_Hillside_Homes_La_Trinidad.jpg",
-    caption: "StoBoSa Hillside Homes Art",
+    src: "/images/Kalugong.png",
+    caption: "Mt. Kalugong Viewpoint",
   },
 ]
 

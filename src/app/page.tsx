@@ -24,20 +24,25 @@ const slides = [
 
 const fbPages = [
   {
-    name: "LGU La Trinidad",
-    href: "https://www.facebook.com/",
-    logo: "/logos/lgu.png",
+    name: "Municipality of La Trinidad",
+    href: "https://www.facebook.com/MOlatrinidad",
+    logo: "/logos/main.jpg",
+  },
+  {
+    name: "PNP La Trinidad MPS",
+    href: "https://www.facebook.com/PNPLaTrinidadMPS",
+    logo: "/logos/police.jpg",
   },
   {
     name: "La Trinidad Tourism",
-    href: "https://www.facebook.com/",
-    logo: "/logos/tourism.png",
+    href: "https://www.facebook.com/LaTrinidadTourism",
+    logo: "/logos/tour.jpg",
   },
   {
-    name: "La Trinidad PIO",
-    href: "https://www.facebook.com/",
-    logo: "/logos/pio.png",
-  },
+   name: "La Trinidad Water District",
+   href: "https://www.facebook.com/profile.php?id=100063988726552",
+   logo: "/logos/water.png",
+  }
 ]
 
 export default function HomePage() {
@@ -113,31 +118,10 @@ export default function HomePage() {
                       ? "bg-green-700 scale-125"
                       : "bg-green-300 hover:bg-green-500"
                   }`}
-                  aria-label={`Slide ${i + 1}`}
                 />
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ================= SERVICES ================= */}
-      <section className="relative max-w-7xl mx-auto px-8 py-36">
-        <div className="grid gap-10 md:grid-cols-3">
-          {[
-            ["Transparency", "Open records, ordinances, disclosures."],
-            ["Public Services", "Permits, certificates, citizen services."],
-            ["Community", "Barangays, programs, local initiatives."],
-          ].map(([title, desc]) => (
-            <Card key={title} className="p-10 text-center">
-              <h3 className="text-2xl font-semibold text-green-800">
-                {title}
-              </h3>
-              <p className="mt-4 text-slate-700 text-lg">
-                {desc}
-              </p>
-            </Card>
-          ))}
         </div>
       </section>
 
@@ -146,45 +130,32 @@ export default function HomePage() {
       <Gallery />
 
       {/* ================= FB LINKS ================= */}
-      <section className="relative py-24">
-        <div className="max-w-7xl mx-auto px-8 text-center">
-          <h2 className="text-3xl font-bold text-green-800 mb-10">
+      <section className="relative py-28">
+        <div className="absolute inset-0 bg-gradient-to-b from-green-50 via-white to-green-50 pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-green-800 mb-4">
             Official Facebook Pages
           </h2>
 
-          <div className="flex flex-wrap justify-center gap-10">
+          <div className="flex flex-wrap justify-center gap-12">
             {fbPages.map((p) => (
               <a
                 key={p.name}
                 href={p.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="
-                  group
-                  flex flex-col items-center gap-4
-                  transition-transform duration-300
-                  hover:-translate-y-2
-                "
+                className="group flex flex-col items-center gap-4 hover:-translate-y-2 transition-all"
               >
-                <div
-                  className="
-                    h-24 w-24
-                    rounded-3xl
-                    border border-green-300/40
-                    bg-white/70 backdrop-blur-xl
-                    shadow-lg
-                    flex items-center justify-center
-                    group-hover:shadow-2xl
-                  "
-                >
+                <div className="h-28 w-28 rounded-3xl border border-green-300/40 bg-white/70 shadow-lg flex items-center justify-center">
                   <img
                     src={p.logo}
                     alt={p.name}
-                    className="h-14 w-14 object-contain"
+                    className="h-16 w-16 object-contain"
                   />
                 </div>
 
-                <span className="text-sm font-semibold text-green-800">
+                <span className="text-sm font-semibold text-green-900">
                   {p.name}
                 </span>
               </a>
