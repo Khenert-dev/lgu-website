@@ -2,6 +2,8 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { onAuthStateChanged } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 const links = [
   ["About", "/about"],
@@ -14,19 +16,32 @@ const links = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const [hide, setHide] = useState(true)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
     window.addEventListener("scroll", onScroll)
-    return () => window.removeEventListener("scroll", onScroll)
+
+    const unsub = onAuthStateChanged(auth, (user) => {
+      // if logged in (admin) → hide public navbar
+      setHide(!!user)
+    })
+
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      unsub()
+    }
   }, [])
+
+  if (hide) return null
 
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300
-        ${scrolled
-          ? "bg-white/80 backdrop-blur-xl shadow-sm border-b"
-          : "bg-white/60 backdrop-blur-md"
+        ${
+          scrolled
+            ? "bg-white/80 backdrop-blur-xl shadow-sm border-b"
+            : "bg-white/60 backdrop-blur-md"
         }`}
     >
       <nav className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">

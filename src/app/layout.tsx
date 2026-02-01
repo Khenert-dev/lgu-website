@@ -16,7 +16,6 @@ export default function RootLayout({
           antialiased
         "
       >
-        {/* global background effects */}
         <div className="fixed inset-0 bg-noise pointer-events-none z-0" />
         <div className="fixed inset-0 bg-parallax pointer-events-none z-0" />
 
