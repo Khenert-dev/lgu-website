@@ -1,142 +1,237 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
-import { onAuthStateChanged, User } from "firebase/auth"
-import { auth } from "@/lib/firebase"
-import Card from "@/components/ui/card"
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"
+import { db } from "@/lib/firebase"
 
-export default function AdminPage() {
-  const [user, setUser] = useState<User | null>(null)
-  const [checking, setChecking] = useState(true)
+type HistoryItem = {
+  year: string
+  title: string
+  description: string
+}
+
+export default function AdminAboutPage() {
+  const [overview, setOverview] = useState("")
+  const [role, setRole] = useState("")
+  const [mission, setMission] = useState("")
+  const [vision, setVision] = useState("")
+  const [sealMeaning, setSealMeaning] = useState("")
+  const [values, setValues] = useState<string[]>([])
+  const [history, setHistory] = useState<HistoryItem[]>([])
+
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u)
-      setChecking(false)
-    })
-    return () => unsub()
+    async function load() {
+      const snap = await getDoc(doc(db, "pages", "about"))
+      if (snap.exists()) {
+        const d = snap.data()
+        setOverview(d.overview ?? "")
+        setRole(d.role ?? "")
+        setMission(d.mission ?? "")
+        setVision(d.vision ?? "")
+        setSealMeaning(d.sealMeaning ?? "")
+        setValues(d.values ?? [])
+        setHistory(d.history ?? [])
+      }
+      setLoading(false)
+    }
+    load()
   }, [])
 
-  if (checking) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-slate-500">
-        Checking access…
-      </div>
+  async function save() {
+    setSaving(true)
+
+    await setDoc(
+      doc(db, "pages", "about"),
+      {
+        overview,
+        role,
+        mission,
+        vision,
+        sealMeaning,
+        values,
+        history,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
     )
+
+    setSaving(false)
+    alert("About page updated successfully")
   }
 
-  if (!user) {
-    return null
+  if (loading) {
+    return <p>Loading editor…</p>
   }
 
   return (
-    <div className="space-y-12">
-      {/* HEADER */}
-      <header className="space-y-2">
-        <h1 className="text-3xl font-bold text-green-800">
-          Admin Dashboard
-        </h1>
-        <p className="text-slate-600">
-          Manage public content and site information.
-        </p>
-      </header>
+    <div className="max-w-4xl space-y-10">
+      <h1 className="text-3xl font-bold text-green-800">
+        Edit About Page
+      </h1>
 
-      {/* QUICK STATS */}
-      <section className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
-        <StatCard label="Pages" value="3" />
-        <StatCard label="Officials" value="—" />
-        <StatCard label="News Posts" value="—" />
-        <StatCard label="Barangays" value="9" />
-      </section>
+      {/* OVERVIEW */}
+      <Section label="Overview">
+        <Textarea value={overview} onChange={setOverview} />
+      </Section>
 
-      {/* MANAGEMENT LINKS */}
-      <section className="grid gap-8 md:grid-cols-2">
-        <DashboardLink
-          title="Edit About Page"
-          desc="Overview, mission, vision, history, values."
-          href="/admin/about"
-        />
+      {/* ROLE */}
+      <Section label="Role in the Province">
+        <Textarea value={role} onChange={setRole} />
+      </Section>
 
-        <DashboardLink
-          title="Manage Officials"
-          desc="Mayor, vice mayor, councilors."
-          href="/admin/officials"
-        />
+      {/* MISSION */}
+      <Section label="Mission">
+        <Textarea value={mission} onChange={setMission} />
+      </Section>
 
-        <DashboardLink
-          title="Manage News"
-          desc="Announcements and public notices."
-          href="/admin/news"
-         
-        />
+      {/* VISION */}
+      <Section label="Vision">
+        <Textarea value={vision} onChange={setVision} />
+      </Section>
 
-        <DashboardLink
-          title="Barangays"
-          desc="Profiles, highlights, locations."
-          href="/admin/barangays"
-          
-        />
-      </section>
+      {/* VALUES */}
+      <Section label="Core Values">
+        {values.map((v, i) => (
+          <div key={i} className="flex gap-2">
+            <input
+              value={v}
+              onChange={(e) => {
+                const copy = [...values]
+                copy[i] = e.target.value
+                setValues(copy)
+              }}
+              className="flex-1 border rounded p-2"
+            />
+            <button
+              onClick={() =>
+                setValues(values.filter((_, idx) => idx !== i))
+              }
+              className="text-red-600"
+            >
+              ✕
+            </button>
+          </div>
+        ))}
+
+        <button
+          onClick={() => setValues([...values, ""])}
+          className="text-sm text-green-700"
+        >
+          + Add value
+        </button>
+      </Section>
+
+      {/* HISTORY */}
+      <Section label="History Timeline">
+        {history.map((h, i) => (
+          <div key={i} className="border rounded-lg p-4 space-y-2">
+            <input
+              placeholder="Year"
+              value={h.year}
+              onChange={(e) => {
+                const copy = [...history]
+                copy[i].year = e.target.value
+                setHistory(copy)
+              }}
+              className="w-full border rounded p-2"
+            />
+
+            <input
+              placeholder="Title"
+              value={h.title}
+              onChange={(e) => {
+                const copy = [...history]
+                copy[i].title = e.target.value
+                setHistory(copy)
+              }}
+              className="w-full border rounded p-2"
+            />
+
+            <textarea
+              placeholder="Description"
+              value={h.description}
+              onChange={(e) => {
+                const copy = [...history]
+                copy[i].description = e.target.value
+                setHistory(copy)
+              }}
+              className="w-full border rounded p-2"
+              rows={3}
+            />
+
+            <button
+              onClick={() =>
+                setHistory(history.filter((_, idx) => idx !== i))
+              }
+              className="text-sm text-red-600"
+            >
+              Remove entry
+            </button>
+          </div>
+        ))}
+
+        <button
+          onClick={() =>
+            setHistory([
+              ...history,
+              { year: "", title: "", description: "" },
+            ])
+          }
+          className="text-sm text-green-700"
+        >
+          + Add history entry
+        </button>
+      </Section>
+
+      {/* SEAL */}
+      <Section label="Municipal Seal Meaning">
+        <Textarea value={sealMeaning} onChange={setSealMeaning} />
+      </Section>
+
+      <button
+        onClick={save}
+        disabled={saving}
+        className="bg-green-700 text-white px-6 py-3 rounded-lg"
+      >
+        {saving ? "Saving…" : "Save Changes"}
+      </button>
     </div>
   )
 }
 
-/* ---------- components ---------- */
+/* ---------- helpers ---------- */
 
-function StatCard({
+function Section({
   label,
-  value,
+  children,
 }: {
   label: string
-  value: string
+  children: React.ReactNode
 }) {
   return (
-    <Card className="p-6">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-2 text-3xl font-bold text-green-800">
-        {value}
-      </p>
-    </Card>
+    <div className="space-y-3">
+      <h2 className="text-lg font-semibold">{label}</h2>
+      {children}
+    </div>
   )
 }
 
-function DashboardLink({
-  title,
-  desc,
-  href,
-  disabled = false,
+function Textarea({
+  value,
+  onChange,
 }: {
-  title: string
-  desc: string
-  href: string
-  disabled?: boolean
+  value: string
+  onChange: (v: string) => void
 }) {
-  if (disabled) {
-    return (
-      <Card className="p-8 opacity-50 cursor-not-allowed">
-        <h3 className="text-xl font-semibold text-slate-400">
-          {title}
-        </h3>
-        <p className="mt-2 text-slate-500">{desc}</p>
-        <p className="mt-4 text-xs text-slate-400">
-          Coming soon
-        </p>
-      </Card>
-    )
-  }
-
   return (
-    <Link href={href}>
-      <Card className="p-8 hover:shadow-xl transition cursor-pointer">
-        <h3 className="text-xl font-semibold text-green-800">
-          {title}
-        </h3>
-        <p className="mt-2 text-slate-600">{desc}</p>
-        <p className="mt-4 text-sm text-green-700 font-medium">
-          Open →
-        </p>
-      </Card>
-    </Link>
+    <textarea
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      rows={4}
+      className="w-full border rounded-lg p-3"
+    />
   )
 }

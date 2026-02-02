@@ -1,187 +1,207 @@
-"use client"
-
-import { useEffect, useState } from "react"
+import Card from "@/components/ui/card"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
-import Card from "@/components/ui/card"
 
-type AboutPageData = {
+type HistoryItem = {
+  year: string
   title: string
-  body: string
+  description: string
 }
 
-const cards = [
-  {
-    title: "Vision",
-    text:
-      "A progressive, sustainable, and inclusive municipality where people, agriculture, and innovation thrive together.",
-  },
-  {
-    title: "Mission",
-    text:
-      "To deliver transparent, efficient, and people-centered public service through accountable governance and active citizen participation.",
-  },
-  {
-    title: "Core Values",
-    text:
-      "Integrity, accountability, unity, innovation, and excellence in public service.",
-  },
-]
+type AboutData = {
+  overview: string
+  role: string
+  mission: string
+  vision: string
+  values: string[]
+  sealMeaning: string
+  history: HistoryItem[]
+}
 
-export default function AboutPage() {
-  const [data, setData] = useState<AboutPageData | null>(null)
-  const [error, setError] = useState(false)
+async function getAbout(): Promise<AboutData | null> {
+  const snap = await getDoc(doc(db, "pages", "about"))
+  if (!snap.exists()) return null
+  return snap.data() as AboutData
+}
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const snap = await getDoc(doc(db, "pages", "about"))
-        if (!snap.exists()) {
-          setError(true)
-          return
-        }
-
-        const d = snap.data()
-        if (!d.title || !d.body) {
-          setError(true)
-          return
-        }
-
-        setData({
-          title: d.title,
-          body: d.body,
-        })
-      } catch {
-        setError(true)
-      }
-    }
-    load()
-  }, [])
-
-  if (error) {
-    return (
-      <div className="p-24 text-center text-slate-500">
-        Page content is unavailable
-      </div>
-    )
-  }
+export default async function AboutPage() {
+  const data = await getAbout()
 
   if (!data) {
     return (
-      <div className="p-24 text-center text-slate-400">
-        Loading…
+      <div className="max-w-5xl mx-auto px-6 py-32 text-center text-slate-500">
+        About content not available.
       </div>
     )
   }
 
   return (
-    <div className="relative overflow-hidden">
-      {/* ================= HERO ================= */}
-      <section className="relative py-36">
-        <div className="absolute inset-0 bg-gradient-to-b from-green-100 via-white to-green-50 pointer-events-none" />
+    <div className="relative">
+      <div className="absolute inset-0 bg-gradient-to-b from-green-50 via-white to-green-50 pointer-events-none" />
 
-        <div className="relative max-w-6xl mx-auto px-8 text-center space-y-10">
-          <span className="inline-block rounded-full bg-green-100 px-4 py-1 text-sm font-semibold text-green-800">
+      <div className="relative max-w-6xl mx-auto px-8 py-32 space-y-32">
+
+        {/* ================= PAGE HEADER ================= */}
+        <header className="max-w-4xl space-y-6">
+          <span className="inline-block text-xs font-semibold tracking-widest uppercase text-green-700">
             About the Municipality
           </span>
 
-          <h1 className="text-5xl md:text-6xl font-bold text-green-900 tracking-tight">
-            {data.title}
+          <h1 className="text-5xl md:text-6xl font-bold text-green-900 leading-tight">
+            Municipality of La Trinidad
           </h1>
 
-          <p className="max-w-3xl mx-auto text-lg md:text-xl text-slate-700 leading-relaxed whitespace-pre-line">
-            {data.body}
+          <p className="text-xl text-slate-700 leading-relaxed whitespace-pre-line">
+            {data.overview}
           </p>
-        </div>
-      </section>
+        </header>
 
-      {/* ================= DIVIDER ================= */}
-      <div className="relative h-24">
-        <div className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-green-300 to-transparent" />
-      </div>
+        {/* ================= ROLE ================= */}
+        <Section
+          title="Role in the Province"
+          description={data.role}
+        />
 
-      {/* ================= CARDS ================= */}
-      <section className="relative py-28">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="mb-16 text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-green-800">
-              Our Direction
-            </h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
-              Guided by clear principles, La Trinidad continues to strengthen
-              public service, community development, and sustainable growth.
-            </p>
+        {/* ================= MISSION / VISION / VALUES ================= */}
+        <section className="space-y-12">
+          <SectionHeader
+            title="Our Direction"
+            subtitle="Guided by service, integrity, and sustainable growth."
+          />
+
+          <div className="grid gap-10 md:grid-cols-3">
+            <InfoCard title="Mission" text={data.mission} />
+            <InfoCard title="Vision" text={data.vision} />
+            <InfoCard
+              title="Core Values"
+              text={data.values.join(", ")}
+            />
           </div>
+        </section>
 
-          <div className="grid gap-8 md:grid-cols-3">
-            {cards.map((c) => (
-              <Card
-                key={c.title}
-                className="
-                  p-8
-                  transition-all
-                  hover:-translate-y-3
-                  hover:shadow-xl
-                "
-              >
-                <h3 className="text-xl font-semibold text-green-800">
-                  {c.title}
-                </h3>
-
-                <div className="mt-3 h-1 w-12 rounded bg-green-600" />
-
-                <p className="mt-6 text-slate-600 leading-relaxed">
-                  {c.text}
-                </p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= IMAGE + TEXT ================= */}
-      <section className="relative py-36">
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-green-50 to-white pointer-events-none" />
-
-        <div className="relative max-w-7xl mx-auto px-8 grid gap-20 md:grid-cols-2 items-center">
-          <div className="relative">
-            <img
-              src="/images/Strawberry.png"
-              alt="La Trinidad"
-              className="rounded-3xl shadow-2xl"
+        {/* ================= HISTORY ================= */}
+        {data.history?.length > 0 && (
+          <section className="space-y-16">
+            <SectionHeader
+              title="Historical Timeline"
+              subtitle="Key milestones that shaped La Trinidad."
             />
 
-            <div className="absolute -bottom-6 -right-6 rounded-2xl bg-green-700 px-6 py-4 text-white shadow-xl">
-              <p className="text-sm font-semibold">
-                Benguet’s Capital Town
-              </p>
+            <div className="relative border-l border-green-300 pl-10 space-y-10">
+              {data.history.map((h, i) => (
+                <div key={i} className="relative">
+                  <span className="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-green-600 ring-4 ring-green-200" />
+
+                  <p className="text-sm font-semibold text-green-700">
+                    {h.year}
+                  </p>
+
+                  <h3 className="mt-1 text-lg font-semibold text-slate-900">
+                    {h.title}
+                  </h3>
+
+                  <p className="mt-2 text-slate-700 leading-relaxed">
+                    {h.description}
+                  </p>
+                </div>
+              ))}
             </div>
-          </div>
+          </section>
+        )}
 
-          <div className="space-y-6">
-            <span className="inline-block rounded-full bg-green-100 px-4 py-1 text-sm font-semibold text-green-800">
-              Community & Growth
-            </span>
+        {/* ================= SEAL ================= */}
+        <section className="space-y-12">
+          <SectionHeader
+            title="Municipal Seal & Symbolism"
+            subtitle="Identity, heritage, and meaning."
+          />
 
-            <h2 className="text-3xl md:text-4xl font-bold text-green-800">
-              Rooted in Agriculture, Driven by Progress
-            </h2>
+          <Card className="p-12 grid gap-12 md:grid-cols-2 items-center">
+            <img
+              src="/images/municipal-seal.png"
+              alt="Municipal Seal of La Trinidad"
+              className="mx-auto h-60 w-60 object-contain"
+            />
 
-            <p className="text-lg text-slate-700 leading-relaxed">
-              La Trinidad serves as the agricultural, commercial, and
-              administrative heart of Benguet. Known for its strawberry
-              farms, vibrant communities, and responsive governance, the
-              municipality continues to balance tradition with innovation.
+            <p className="text-lg text-slate-700 leading-relaxed whitespace-pre-line">
+              {data.sealMeaning}
             </p>
+          </Card>
+        </section>
 
-            <p className="text-lg text-slate-700 leading-relaxed">
-              Through strong leadership and citizen involvement, La Trinidad
-              remains committed to sustainable development, disaster
-              resilience, and inclusive growth for future generations.
-            </p>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
+  )
+}
+
+/* ================= HELPERS ================= */
+
+function Section({
+  title,
+  description,
+}: {
+  title: string
+  description: string
+}) {
+  return (
+    <Card className="p-14">
+      <h2 className="text-3xl font-bold text-green-800 mb-6">
+        {title}
+      </h2>
+      <p className="text-lg text-slate-700 leading-relaxed whitespace-pre-line">
+        {description}
+      </p>
+    </Card>
+  )
+}
+
+function SectionHeader({
+  title,
+  subtitle,
+}: {
+  title: string
+  subtitle?: string
+}) {
+  return (
+    <div className="max-w-3xl space-y-4">
+      <h2 className="text-3xl md:text-4xl font-bold text-green-800">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="text-slate-600 text-lg">
+          {subtitle}
+        </p>
+      )}
+    </div>
+  )
+}
+
+function InfoCard({
+  title,
+  text,
+}: {
+  title: string
+  text: string
+}) {
+  return (
+    <Card
+      className="
+        p-10
+        transition-all
+        duration-300
+        hover:-translate-y-2
+        hover:shadow-2xl
+      "
+    >
+      <h3 className="text-xl font-semibold text-green-800 mb-3">
+        {title}
+      </h3>
+
+      <div className="h-1 w-12 rounded bg-green-600 mb-6" />
+
+      <p className="text-slate-700 leading-relaxed whitespace-pre-line">
+        {text}
+      </p>
+    </Card>
   )
 }

@@ -1,20 +1,36 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 
-const BARANGAYS = [
-  { name: "Poblacion", coords: [16.456, 120.59] },
-  { name: "Balili", coords: [16.468, 120.596] },
-  { name: "Buyagan", coords: [16.452, 120.603] },
-]
+type Marker = {
+  name: string
+  slug: string
+  lat: number
+  lng: number
+}
 
-export default function LeafletMap() {
+type Props = {
+  lat?: number
+  lng?: number
+  name?: string
+  markers?: Marker[]
+}
+
+export default function LeafletMap({
+  lat,
+  lng,
+  name,
+  markers = [],
+}: Props) {
   const ref = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<any>(null)
+  const router = useRouter()
 
   useEffect(() => {
-    if (!ref.current) return
+    if (!ref.current || mapRef.current) return
 
     const map = L.map(ref.current, {
       center: [16.45, 120.59],
@@ -22,6 +38,8 @@ export default function LeafletMap() {
       scrollWheelZoom: false,
       zoomControl: false,
     })
+
+    mapRef.current = map
 
     L.control.zoom({ position: "bottomright" }).addTo(map)
 
@@ -39,24 +57,34 @@ export default function LeafletMap() {
       `,
       iconSize: [24, 24],
       iconAnchor: [12, 12],
-      popupAnchor: [0, -12],
     })
 
-    BARANGAYS.forEach((b) => {
-      L.marker(b.coords as [number, number], { icon })
-        .addTo(map)
-        .bindPopup(
-          `<div class="text-center">
-             <p class="font-semibold text-green-800">${b.name}</p>
-             <p class="text-xs text-slate-500">Barangay</p>
-           </div>`
-        )
+    markers.forEach((b) => {
+      const marker = L.marker([b.lat, b.lng], { icon }).addTo(map)
+
+      marker.on("click", () => {
+        router.push(`/barangays/${b.slug}`)
+      })
+
+      marker.bindPopup(
+        `<div class="text-center">
+           <p class="font-semibold text-green-800">${b.name}</p>
+           <p class="text-xs text-slate-500">View barangay</p>
+         </div>`
+      )
     })
 
     return () => {
       map.remove()
+      mapRef.current = null
     }
-  }, [])
+  }, [markers, router])
+
+  // focus when lat/lng provided
+  useEffect(() => {
+    if (!mapRef.current || !lat || !lng) return
+    mapRef.current.flyTo([lat, lng], 15, { animate: true })
+  }, [lat, lng])
 
   return (
     <div

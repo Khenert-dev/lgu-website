@@ -4,7 +4,13 @@ import dynamic from "next/dynamic"
 
 const LeafletMap = dynamic(() => import("./LeafletMap"), { ssr: false })
 
-export default function BarangayMap() {
+type Props = {
+  lat?: number
+  lng?: number
+  name?: string
+}
+
+export default function BarangayMap({ lat, lng, name }: Props) {
   return (
     <section className="relative max-w-7xl mx-auto px-8 py-28">
       <div className="absolute inset-0 bg-gradient-to-b from-green-50 via-white to-green-50 pointer-events-none" />
@@ -24,7 +30,7 @@ export default function BarangayMap() {
             shadow-2xl
           "
         >
-          <LeafletMap />
+          <LeafletMap lat={lat} lng={lng} name={name} />
 
           <div
             className="
@@ -37,12 +43,14 @@ export default function BarangayMap() {
             "
           >
             <p className="font-semibold text-green-800 mb-2">
-              Legend
+              {name ? "Focused Barangay" : "Legend"}
             </p>
 
             <div className="flex items-center gap-2 text-sm text-slate-700">
               <span className="inline-block h-3 w-3 rounded-full bg-green-600 ring-2 ring-green-300" />
-              <span>Barangay Center</span>
+              <span>
+                {name ?? "Barangay Center"}
+              </span>
             </div>
           </div>
         </div>

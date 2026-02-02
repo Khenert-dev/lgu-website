@@ -1,219 +1,222 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  setDoc,
+} from "firebase/firestore"
 import { db } from "@/lib/firebase"
 
-type HistoryItem = {
-  year: string
-  title: string
+type Barangay = {
+  id?: string
+  name: string
+  slug: string
   description: string
+  imageUrl: string
+  lat?: number
+  lng?: number
 }
 
-export default function AdminAboutPage() {
-  const [overview, setOverview] = useState("")
-  const [role, setRole] = useState("")
-  const [mission, setMission] = useState("")
-  const [vision, setVision] = useState("")
-  const [values, setValues] = useState<string[]>([])
-  const [sealMeaning, setSealMeaning] = useState("")
-  const [history, setHistory] = useState<HistoryItem[]>([])
-
-  const [loading, setLoading] = useState(true)
+export default function AdminBarangaysPage() {
+  const [items, setItems] = useState<Barangay[]>([])
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
+  const [form, setForm] = useState<Barangay>({
+    name: "",
+    slug: "",
+    description: "",
+    imageUrl: "",
+  })
+
   useEffect(() => {
-    async function load() {
-      const snap = await getDoc(doc(db, "pages", "about"))
-      if (snap.exists()) {
-        const d = snap.data()
-        setOverview(d.overview ?? "")
-        setRole(d.role ?? "")
-        setMission(d.mission ?? "")
-        setVision(d.vision ?? "")
-        setValues(Array.isArray(d.values) ? d.values : [])
-        setSealMeaning(d.sealMeaning ?? "")
-        setHistory(Array.isArray(d.history) ? d.history : [])
-      }
-      setLoading(false)
-    }
     load()
   }, [])
 
-  function updateHistory(index: number, key: keyof HistoryItem, value: string) {
-    const copy = [...history]
-    copy[index] = { ...copy[index], [key]: value }
-    setHistory(copy)
+  async function load() {
+    const snap = await getDocs(collection(db, "barangays"))
+    setItems(
+      snap.docs.map((d) => ({
+        id: d.id,
+        ...(d.data() as Barangay),
+      }))
+    )
+  }
+
+  function autoSlug(name: string) {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")
+  }
+
+  function edit(b: Barangay) {
+    setEditingId(b.id!)
+    setForm(b)
+  }
+
+  function reset() {
+    setEditingId(null)
+    setForm({
+      name: "",
+      slug: "",
+      description: "",
+      imageUrl: "",
+    })
   }
 
   async function save() {
+    if (!form.name || !form.slug) {
+      alert("Name and slug are required")
+      return
+    }
+
     setSaving(true)
 
-    await setDoc(doc(db, "pages", "about"), {
-      overview,
-      role,
-      mission,
-      vision,
-      values,
-      sealMeaning,
-      history,
-      updatedAt: serverTimestamp(),
-    })
+    try {
+      const payload = {
+        name: form.name,
+        slug: form.slug,
+        description: form.description,
+        imageUrl: form.imageUrl,
+        lat: form.lat ?? null,
+        lng: form.lng ?? null,
+      }
 
-    setSaving(false)
-    alert("About page saved")
+      if (editingId) {
+        await setDoc(doc(db, "barangays", editingId), payload, {
+          merge: true,
+        })
+      } else {
+        await addDoc(collection(db, "barangays"), payload)
+      }
+
+      reset()
+      await load()
+    } catch (err) {
+      console.error(err)
+      alert("Failed to save barangay")
+    } finally {
+      setSaving(false)
+    }
   }
 
-  if (loading) {
-    return <p className="text-slate-500">Loading editor…</p>
+  async function remove(b: Barangay) {
+    if (!b.id) return
+    if (!confirm(`Delete "${b.name}"?`)) return
+    await deleteDoc(doc(db, "barangays", b.id))
+    load()
   }
 
   return (
-    <div className="max-w-5xl space-y-12">
-      <h1 className="text-3xl font-bold text-green-800">
-        Edit About Page
-      </h1>
+    <div className="space-y-16">
+      <header>
+        <h1 className="text-3xl font-bold">Manage Barangays</h1>
+        <p className="text-slate-500">
+          Use public image URLs (Facebook, Imgur, etc.)
+        </p>
+      </header>
 
-      {/* OVERVIEW */}
-      <Section title="Overview">
-        <Textarea value={overview} onChange={setOverview} />
-      </Section>
+      <section className="rounded-2xl border bg-white p-8 space-y-6">
+        <h2 className="text-lg font-semibold">
+          {editingId ? "Edit Barangay" : "Add Barangay"}
+        </h2>
 
-      {/* ROLE */}
-      <Section title="Role in the Province">
-        <Textarea value={role} onChange={setRole} />
-      </Section>
+        <input
+          placeholder="Barangay Name"
+          value={form.name}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              name: e.target.value,
+              slug: editingId
+                ? form.slug
+                : autoSlug(e.target.value),
+            })
+          }
+          className="input"
+        />
 
-      {/* MISSION / VISION */}
-      <div className="grid md:grid-cols-2 gap-8">
-        <Section title="Mission">
-          <Textarea value={mission} onChange={setMission} />
-        </Section>
+        <input
+          placeholder="Slug"
+          value={form.slug}
+          onChange={(e) =>
+            setForm({ ...form, slug: e.target.value })
+          }
+          className="input"
+        />
 
-        <Section title="Vision">
-          <Textarea value={vision} onChange={setVision} />
-        </Section>
-      </div>
+        <input
+          placeholder="Image URL (https://...)"
+          value={form.imageUrl}
+          onChange={(e) =>
+            setForm({ ...form, imageUrl: e.target.value })
+          }
+          className="input"
+        />
 
-      {/* VALUES */}
-      <Section title="Core Values">
-        <div className="space-y-2">
-          {values.map((v, i) => (
-            <input
-              key={i}
-              value={v}
-              onChange={(e) => {
-                const copy = [...values]
-                copy[i] = e.target.value
-                setValues(copy)
-              }}
-              className="w-full border rounded-lg p-2"
-            />
-          ))}
+        {form.imageUrl && (
+          <img
+            src={form.imageUrl}
+            alt=""
+            className="h-48 w-full object-cover rounded-lg border"
+          />
+        )}
+
+        <textarea
+          rows={6}
+          placeholder="Full description"
+          value={form.description}
+          onChange={(e) =>
+            setForm({ ...form, description: e.target.value })
+          }
+          className="input"
+        />
+
+        <div className="flex justify-end gap-4">
+          {editingId && (
+            <button onClick={reset} className="btn-secondary">
+              Cancel
+            </button>
+          )}
           <button
-            onClick={() => setValues([...values, ""])}
-            className="text-sm text-green-700"
+            onClick={save}
+            disabled={saving}
+            className="btn-primary"
           >
-            + Add value
+            {saving ? "Saving…" : "Save"}
           </button>
         </div>
-      </Section>
+      </section>
 
-      {/* HISTORY */}
-      <Section title="Historical Timeline">
-        <div className="space-y-6">
-          {history.map((h, i) => (
-            <div key={i} className="border rounded-xl p-4 space-y-2">
-              <input
-                placeholder="Year"
-                value={h.year}
-                onChange={(e) =>
-                  updateHistory(i, "year", e.target.value)
-                }
-                className="w-full border rounded p-2"
-              />
-              <input
-                placeholder="Title"
-                value={h.title}
-                onChange={(e) =>
-                  updateHistory(i, "title", e.target.value)
-                }
-                className="w-full border rounded p-2"
-              />
-              <textarea
-                placeholder="Description"
-                value={h.description}
-                onChange={(e) =>
-                  updateHistory(i, "description", e.target.value)
-                }
-                rows={4}
-                className="w-full border rounded p-2"
-              />
+      <section className="space-y-3">
+        {items.map((b) => (
+          <div
+            key={b.id}
+            className="flex justify-between rounded-xl border bg-white p-4"
+          >
+            <div>
+              <p className="font-semibold">{b.name}</p>
+              <p className="text-sm text-slate-500">
+                /barangays/{b.slug}
+              </p>
             </div>
-          ))}
-
-          <button
-            onClick={() =>
-              setHistory([
-                ...history,
-                { year: "", title: "", description: "" },
-              ])
-            }
-            className="text-sm text-green-700"
-          >
-            + Add timeline entry
-          </button>
-        </div>
-      </Section>
-
-      {/* SEAL */}
-      <Section title="Municipal Seal Meaning">
-        <Textarea value={sealMeaning} onChange={setSealMeaning} />
-      </Section>
-
-      <button
-        onClick={save}
-        disabled={saving}
-        className="bg-green-700 text-white px-6 py-3 rounded-lg"
-      >
-        {saving ? "Saving…" : "Save Changes"}
-      </button>
+            <div className="flex gap-4">
+              <button onClick={() => edit(b)} className="text-blue-600">
+                Edit
+              </button>
+              <button onClick={() => remove(b)} className="text-red-600">
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </section>
     </div>
-  )
-}
-
-/* ---------- small helpers ---------- */
-
-function Section({
-  title,
-  children,
-}: {
-  title: string
-  children: React.ReactNode
-}) {
-  return (
-    <section className="space-y-4">
-      <h2 className="text-xl font-semibold text-green-800">
-        {title}
-      </h2>
-      {children}
-    </section>
-  )
-}
-
-function Textarea({
-  value,
-  onChange,
-}: {
-  value: string
-  onChange: (v: string) => void
-}) {
-  return (
-    <textarea
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      rows={6}
-      className="w-full border rounded-lg p-4"
-    />
   )
 }

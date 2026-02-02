@@ -17,11 +17,22 @@ type Official = {
   img: string
 }
 
+const ROLES = [
+  "Municipal Mayor",
+  "Vice Mayor",
+  "Councilor",
+]
+
 export default function AdminOfficialsPage() {
   const [items, setItems] = useState<Official[]>([])
-  const [role, setRole] = useState("")
-  const [name, setName] = useState("")
-  const [img, setImg] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+
+  const [form, setForm] = useState<Official>({
+    role: "",
+    name: "",
+    img: "",
+  })
 
   useEffect(() => {
     load()
@@ -35,82 +46,148 @@ export default function AdminOfficialsPage() {
         ...(d.data() as Official),
       }))
     )
+    setLoading(false)
+  }
+
+  function update<K extends keyof Official>(key: K, value: Official[K]) {
+    setForm({ ...form, [key]: value })
   }
 
   async function add() {
-    if (!role || !name) return
+    if (!form.role || !form.name) return
 
-    await addDoc(collection(db, "officials"), {
-      role,
-      name,
-      img,
-    })
+    setSaving(true)
+    await addDoc(collection(db, "officials"), form)
 
-    setRole("")
-    setName("")
-    setImg("")
+    setForm({ role: "", name: "", img: "" })
+    setSaving(false)
     load()
   }
 
-  async function remove(id?: string) {
-    if (!id) return
-    await deleteDoc(doc(db, "officials", id))
+  async function remove(o: Official) {
+    if (!o.id) return
+    const ok = confirm(`Delete official "${o.name}"?`)
+    if (!ok) return
+
+    await deleteDoc(doc(db, "officials", o.id))
     load()
   }
 
   return (
-    <div className="max-w-5xl space-y-10">
-      <h1 className="text-3xl font-bold text-green-800">
-        Manage Officials
-      </h1>
+    <div className="space-y-20">
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <input
-          placeholder="Role"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="border rounded p-3"
-        />
-        <input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border rounded p-3"
-        />
-        <input
-          placeholder="Image URL"
-          value={img}
-          onChange={(e) => setImg(e.target.value)}
-          className="border rounded p-3"
-        />
-      </div>
+      {/* ================= HEADER ================= */}
+      <header className="space-y-2">
+        <h1 className="text-3xl font-bold text-slate-800">
+          Manage Officials
+        </h1>
+        <p className="text-slate-500">
+          Add, review, and remove municipal officials.
+        </p>
+      </header>
 
-      <button
-        onClick={add}
-        className="bg-green-700 text-white px-6 py-3 rounded"
-      >
-        Add Official
-      </button>
+      {/* ================= ADD FORM ================= */}
+      <section className="rounded-2xl border bg-white p-8 shadow-sm space-y-6">
+        <h2 className="text-lg font-semibold text-slate-800">
+          Add New Official
+        </h2>
 
-      <div className="space-y-4">
-        {items.map((o) => (
-          <div
-            key={o.id}
-            className="flex items-center justify-between border rounded p-4"
+        <div className="grid gap-4 md:grid-cols-3">
+          <select
+            value={form.role}
+            onChange={(e) => update("role", e.target.value)}
+            className="rounded-md border px-3 py-2"
           >
-            <div>
-              <p className="font-semibold">{o.name}</p>
-              <p className="text-sm text-slate-500">{o.role}</p>
-            </div>
-            <button
-              onClick={() => remove(o.id)}
-              className="text-red-600 text-sm"
-            >
-              Delete
-            </button>
+            <option value="">Select role</option>
+            {ROLES.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+
+          <input
+            placeholder="Full name"
+            value={form.name}
+            onChange={(e) => update("name", e.target.value)}
+            className="rounded-md border px-3 py-2"
+          />
+
+          <input
+            placeholder="Image URL (optional)"
+            value={form.img}
+            onChange={(e) => update("img", e.target.value)}
+            className="rounded-md border px-3 py-2"
+          />
+        </div>
+
+        {form.img && (
+          <div className="flex items-center gap-4">
+            <img
+              src={form.img}
+              alt="Preview"
+              className="h-24 w-24 rounded-full object-cover border"
+            />
+            <p className="text-sm text-slate-500">
+              Image preview
+            </p>
           </div>
-        ))}
-      </div>
+        )}
+
+        <button
+          onClick={add}
+          disabled={saving}
+          className="rounded-lg bg-slate-900 px-6 py-3 text-white font-semibold hover:bg-slate-800 disabled:opacity-60"
+        >
+          {saving ? "Adding…" : "Add Official"}
+        </button>
+      </section>
+
+      {/* ================= LIST ================= */}
+      <section className="space-y-6">
+        <h2 className="text-lg font-semibold text-slate-800">
+          Existing Officials
+        </h2>
+
+        {loading ? (
+          <p className="text-slate-500">Loading…</p>
+        ) : items.length === 0 ? (
+          <p className="text-slate-500">No officials yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {items.map((o) => (
+              <div
+                key={o.id}
+                className="flex items-center justify-between rounded-xl border bg-white p-4 shadow-sm"
+              >
+                <div className="flex items-center gap-4">
+                  <img
+                    src={o.img || "/images/avatar-placeholder.png"}
+                    alt={o.name}
+                    className="h-12 w-12 rounded-full object-cover border"
+                  />
+
+                  <div>
+                    <p className="font-semibold text-slate-800">
+                      {o.name}
+                    </p>
+                    <p className="text-sm text-slate-500">
+                      {o.role}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => remove(o)}
+                  className="text-sm font-medium text-red-600 hover:underline"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   )
 }

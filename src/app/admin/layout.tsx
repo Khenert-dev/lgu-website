@@ -36,7 +36,6 @@ export default function AdminLayout({
     }
   }
 
-  /* ---------- LOADING ---------- */
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-slate-500">
@@ -45,11 +44,10 @@ export default function AdminLayout({
     )
   }
 
-  /* ---------- LOGIN ---------- */
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="glass w-full max-w-sm rounded-3xl p-10">
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+        <div className="w-full max-w-sm rounded-3xl bg-white p-10 shadow-xl">
           <h1 className="mb-6 text-center text-2xl font-bold text-green-800">
             Admin Login
           </h1>
@@ -64,7 +62,7 @@ export default function AdminLayout({
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border bg-white/80 p-3"
+              className="w-full rounded-lg border p-3"
             />
 
             <input
@@ -72,14 +70,14 @@ export default function AdminLayout({
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border bg-white/80 p-3"
+              className="w-full rounded-lg border p-3"
             />
           </div>
 
           <button
             onClick={login}
             disabled={signingIn}
-            className="mt-6 w-full rounded-xl bg-green-700 py-3 text-white font-semibold hover:bg-green-800 disabled:opacity-60"
+            className="mt-6 w-full rounded-lg bg-green-700 py-3 text-white font-semibold hover:bg-green-800 disabled:opacity-60"
           >
             {signingIn ? "Signing in…" : "Sign In"}
           </button>
@@ -88,10 +86,10 @@ export default function AdminLayout({
     )
   }
 
-  /* ---------- ADMIN ---------- */
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 z-50 glass border-b">
+    <div className="min-h-screen bg-slate-100">
+      {/* ADMIN HEADER (NOT PUBLIC NAVBAR) */}
+      <header className="sticky top-0 z-50 bg-white border-b">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <div>
             <p className="font-semibold text-green-800">
@@ -101,7 +99,6 @@ export default function AdminLayout({
           </div>
 
           <nav className="flex gap-6 text-sm">
-            <Link href="/admin">Dashboard</Link>
             <Link href="/admin/about">About</Link>
             <Link href="/admin/officials">Officials</Link>
             <Link href="/admin/news">News</Link>

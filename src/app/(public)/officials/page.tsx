@@ -1,9 +1,6 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { collection, getDocs } from "firebase/firestore"
-import { db } from "@/lib/firebase"
 import Card from "@/components/ui/card"
+import { collection, getDocs, query, orderBy } from "firebase/firestore"
+import { db } from "@/lib/firebase"
 
 type Official = {
   id: string
@@ -12,46 +9,18 @@ type Official = {
   img: string
 }
 
-export default function OfficialsPage() {
-  const [officials, setOfficials] = useState<Official[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+async function getOfficials(): Promise<Official[]> {
+  const q = query(collection(db, "officials"), orderBy("role"))
+  const snap = await getDocs(q)
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const snap = await getDocs(collection(db, "officials"))
-        setOfficials(
-          snap.docs.map((d) => ({
-            id: d.id,
-            ...(d.data() as Omit<Official, "id">),
-          }))
-        )
-      } catch {
-        setError(true)
-      } finally {
-        setLoading(false)
-      }
-    }
+  return snap.docs.map((d) => ({
+    id: d.id,
+    ...(d.data() as Omit<Official, "id">),
+  }))
+}
 
-    load()
-  }, [])
-
-  if (loading) {
-    return (
-      <section className="max-w-7xl mx-auto px-8 py-32 text-slate-500">
-        Loading officials…
-      </section>
-    )
-  }
-
-  if (error) {
-    return (
-      <section className="max-w-7xl mx-auto px-8 py-32 text-red-600">
-        Failed to load officials.
-      </section>
-    )
-  }
+export default async function OfficialsPage() {
+  const officials = await getOfficials()
 
   return (
     <section className="relative max-w-7xl mx-auto px-8 py-32">
@@ -76,26 +45,14 @@ export default function OfficialsPage() {
           {officials.map((o) => (
             <Card
               key={o.id}
-              className="
-                p-10
-                text-center
-                hover:scale-[1.03]
-                transition-transform duration-500
-              "
+              className="p-10 text-center transition-transform duration-500 hover:scale-[1.03]"
             >
               <div className="relative mx-auto h-44 w-44 mb-6">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-green-300 to-emerald-600 blur-lg opacity-30" />
                 <img
                   src={o.img}
                   alt={o.name}
-                  className="
-                    relative z-10
-                    h-44 w-44
-                    rounded-full
-                    object-cover
-                    border-4 border-white
-                    shadow-xl
-                  "
+                  className="relative z-10 h-44 w-44 rounded-full object-cover border-4 border-white shadow-xl"
                 />
               </div>
 
