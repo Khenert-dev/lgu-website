@@ -1,15 +1,13 @@
-import mongoose, { Schema } from "mongoose"
+import { Schema, model, models } from "mongoose"
 
 const OfficialSchema = new Schema(
   {
-    name: { type: String, required: true },
     role: { type: String, required: true },
-    image: { type: String },
-    order: { type: Number, default: 0 },
+    name: { type: String, required: true },
+    image: String,
   },
   { timestamps: true }
 )
 
 export const Official =
-  mongoose.models.Official ||
-  mongoose.model("Official", OfficialSchema)
+  models.Official || model("Official", OfficialSchema)
