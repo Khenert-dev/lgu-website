@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 
 type Barangay = {
-  _id?: string
   name: string
   slug: string
   description: string
@@ -19,10 +18,9 @@ const EMPTY: Barangay = {
   image: "",
 }
 
-export default function AdminBarangaysPage() {
+export default function AdminBarangayPage() {
   const [items, setItems] = useState<Barangay[]>([])
   const [form, setForm] = useState<Barangay>(EMPTY)
-  const [file, setFile] = useState<File | null>(null)
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -42,51 +40,51 @@ export default function AdminBarangaysPage() {
       .replace(/(^-|-$)/g, "")
   }
 
-  async function upload(): Promise<string | undefined> {
-    if (!file) return form.image
-    const data = new FormData()
-    data.append("file", file)
-    const res = await fetch("/api/upload", { method: "POST", body: data })
-    const json = await res.json()
-    return json.url
-  }
-
   async function save() {
     if (!form.name || !form.slug || !form.description) {
-      alert("Required fields missing")
+      alert("Missing fields")
       return
     }
 
     setSaving(true)
-    try {
-      const image = await upload()
 
-      await fetch("/api/barangays", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, image }),
-      })
+    const res = await fetch("/api/barangays", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    })
 
-      setForm(EMPTY)
-      setFile(null)
-      load()
-    } finally {
-      setSaving(false)
+    setSaving(false)
+
+    if (!res.ok) {
+      alert("Failed to save")
+      return
     }
+
+    setForm(EMPTY)
+    load()
   }
 
-  async function remove(id?: string) {
-    if (!id) return
+  async function remove(slug: string) {
     if (!confirm("Delete this barangay?")) return
-    await fetch(`/api/barangays/${id}`, { method: "DELETE" })
+
+    const res = await fetch(`/api/barangays/${slug}`, {
+      method: "DELETE",
+    })
+
+    if (!res.ok) {
+      alert("Delete failed")
+      return
+    }
+
     load()
   }
 
   return (
-    <div className="max-w-4xl space-y-14">
+    <div className="max-w-4xl space-y-12">
       <h1 className="text-3xl font-bold">Manage Barangays</h1>
 
-      <div className="rounded-2xl border bg-white p-8 space-y-4">
+      <div className="border rounded-xl p-6 space-y-4 bg-white">
         <input
           className="input"
           placeholder="Name"
@@ -119,51 +117,6 @@ export default function AdminBarangaysPage() {
           }
         />
 
-        <input
-          className="input"
-          placeholder="Image URL (optional)"
-          value={form.image || ""}
-          onChange={(e) =>
-            setForm({ ...form, image: e.target.value })
-          }
-        />
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) =>
-            setFile(e.target.files?.[0] ?? null)
-          }
-        />
-
-        {(file || form.image) && (
-          <img
-            src={file ? URL.createObjectURL(file) : form.image}
-            className="h-32 rounded object-cover border"
-          />
-        )}
-
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            className="input"
-            placeholder="Latitude"
-            type="number"
-            value={form.lat ?? ""}
-            onChange={(e) =>
-              setForm({ ...form, lat: Number(e.target.value) })
-            }
-          />
-          <input
-            className="input"
-            placeholder="Longitude"
-            type="number"
-            value={form.lng ?? ""}
-            onChange={(e) =>
-              setForm({ ...form, lng: Number(e.target.value) })
-            }
-          />
-        </div>
-
         <button
           onClick={save}
           disabled={saving}
@@ -176,8 +129,8 @@ export default function AdminBarangaysPage() {
       <div className="space-y-3">
         {items.map((b) => (
           <div
-            key={b._id}
-            className="flex justify-between rounded-xl border bg-white p-4"
+            key={b.slug}
+            className="flex justify-between items-center border rounded p-4 bg-white"
           >
             <div>
               <p className="font-semibold">{b.name}</p>
@@ -186,7 +139,7 @@ export default function AdminBarangaysPage() {
               </p>
             </div>
             <button
-              onClick={() => remove(b._id)}
+              onClick={() => remove(b.slug)}
               className="text-red-600 text-sm"
             >
               Delete

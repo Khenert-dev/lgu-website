@@ -1,25 +1,6 @@
 import { NextResponse } from "next/server"
 import { connectDB } from "@/lib/mongoose"
-import { Schema, model, models } from "mongoose"
-
-/* ================= SCHEMA ================= */
-
-const BarangaySchema = new Schema(
-  {
-    name: { type: String, required: true },
-    slug: { type: String, required: true, unique: true },
-    description: { type: String, required: true },
-    image: String,
-    lat: Number,
-    lng: Number,
-  },
-  { timestamps: true }
-)
-
-const Barangay =
-  models.Barangay || model("Barangay", BarangaySchema)
-
-/* ================= GET /api/barangay/[slug] ================= */
+import { Barangay } from "@/models/Barangay"
 
 export async function GET(
   _: Request,
@@ -27,9 +8,7 @@ export async function GET(
 ) {
   await connectDB()
 
-  const item = await Barangay.findOne({
-    slug: params.slug,
-  }).lean()
+  const item = await Barangay.findOne({ slug: params.slug }).lean()
 
   if (!item) {
     return NextResponse.json(
@@ -39,4 +18,22 @@ export async function GET(
   }
 
   return NextResponse.json(item)
+}
+
+export async function DELETE(
+  _: Request,
+  { params }: { params: { slug: string } }
+) {
+  await connectDB()
+
+  const res = await Barangay.deleteOne({ slug: params.slug })
+
+  if (res.deletedCount === 0) {
+    return NextResponse.json(
+      { error: "Not found" },
+      { status: 404 }
+    )
+  }
+
+  return NextResponse.json({ deleted: true })
 }

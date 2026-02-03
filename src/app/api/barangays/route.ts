@@ -13,7 +13,18 @@ export async function POST(req: Request) {
   const body = await req.json()
 
   if (!body.name || !body.slug || !body.description) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 })
+    return NextResponse.json(
+      { error: "Missing fields" },
+      { status: 400 }
+    )
+  }
+
+  const exists = await Barangay.findOne({ slug: body.slug })
+  if (exists) {
+    return NextResponse.json(
+      { error: "Slug already exists" },
+      { status: 409 }
+    )
   }
 
   const created = await Barangay.create(body)
