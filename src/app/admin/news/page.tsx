@@ -1,107 +1,151 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  serverTimestamp,
-} from "firebase/firestore"
-import { db } from "@/lib/firebase"
 
-type News = {
-  id?: string
+type NewsItem = {
+  _id?: string
   title: string
   body: string
-  createdAt?: any
+  image?: string
 }
 
 export default function AdminNewsPage() {
-  const [items, setItems] = useState<News[]>([])
+  const [items, setItems] = useState<NewsItem[]>([])
   const [title, setTitle] = useState("")
   const [body, setBody] = useState("")
+  const [image, setImage] = useState("")
+  const [file, setFile] = useState<File | null>(null)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     load()
   }, [])
 
   async function load() {
-    const snap = await getDocs(collection(db, "news"))
-    setItems(
-      snap.docs.map((d) => ({
-        id: d.id,
-        ...(d.data() as News),
-      }))
-    )
+    const res = await fetch("/api/news")
+    const data = await res.json()
+    setItems(data)
   }
 
-  async function add() {
-    if (!title || !body) return
+  async function upload(): Promise<string | undefined> {
+    if (!file) return image
+    const fd = new FormData()
+    fd.append("file", file)
 
-    await addDoc(collection(db, "news"), {
-      title,
-      body,
-      createdAt: serverTimestamp(),
+    const res = await fetch("/api/upload/news", {
+      method: "POST",
+      body: fd,
+    })
+
+    const json = await res.json()
+    return json.url
+  }
+
+  async function publish() {
+    if (!title || !body) {
+      alert("Title and body required")
+      return
+    }
+
+    setSaving(true)
+    const imageUrl = await upload()
+
+    await fetch("/api/news", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title,
+        body,
+        image: imageUrl,
+      }),
     })
 
     setTitle("")
     setBody("")
+    setImage("")
+    setFile(null)
+    setSaving(false)
     load()
   }
 
   async function remove(id?: string) {
     if (!id) return
-    await deleteDoc(doc(db, "news", id))
+    if (!confirm("Delete this news item?")) return
+    await fetch(`/api/news/${id}`, { method: "DELETE" })
     load()
   }
 
   return (
-    <div className="max-w-4xl space-y-10">
+    <div className="max-w-5xl space-y-12">
       <h1 className="text-3xl font-bold text-green-800">
         News & Announcements
       </h1>
 
-      <input
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="w-full border rounded p-3"
-      />
+      {/* CREATE */}
+      <section className="border rounded-xl bg-white p-6 space-y-4">
+        <input
+          className="input"
+          placeholder="Headline"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
-      <textarea
-        placeholder="Body"
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        rows={6}
-        className="w-full border rounded p-3"
-      />
+        <textarea
+          className="input"
+          rows={6}
+          placeholder="Full article"
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+        />
 
-      <button
-        onClick={add}
-        className="bg-green-700 text-white px-6 py-3 rounded"
-      >
-        Publish
-      </button>
+        <input
+          className="input"
+          placeholder="Image URL (optional)"
+          value={image}
+          onChange={(e) => setImage(e.target.value)}
+        />
 
-      <div className="space-y-4">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) =>
+            setFile(e.target.files?.[0] ?? null)
+          }
+        />
+
+        {(file || image) && (
+          <img
+            src={file ? URL.createObjectURL(file) : image}
+            className="h-48 w-full object-cover rounded-lg border"
+          />
+        )}
+
+        <button
+          onClick={publish}
+          disabled={saving}
+          className="btn-primary"
+        >
+          {saving ? "Publishing…" : "Publish"}
+        </button>
+      </section>
+
+      {/* LIST */}
+      <section className="space-y-4">
         {items.map((n) => (
           <div
-            key={n.id}
-            className="border rounded p-4 space-y-2"
+            key={n._id}
+            className="border rounded-lg p-4 bg-white"
           >
-            <h3 className="font-semibold">{n.title}</h3>
-            <p className="text-sm text-slate-600">{n.body}</p>
+            <p className="font-semibold">{n.title}</p>
             <button
-              onClick={() => remove(n.id)}
-              className="text-red-600 text-sm"
+              onClick={() => remove(n._id)}
+              className="text-sm text-red-600"
             >
               Delete
             </button>
           </div>
         ))}
-      </div>
+      </section>
     </div>
   )
 }

@@ -88,7 +88,7 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen bg-slate-100">
-      {/* ADMIN HEADER (NOT PUBLIC NAVBAR) */}
+      {/* ADMIN HEADER */}
       <header className="sticky top-0 z-50 bg-white border-b">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <div>
@@ -98,11 +98,14 @@ export default function AdminLayout({
             <p className="text-xs text-slate-500">{user.email}</p>
           </div>
 
-          <nav className="flex gap-6 text-sm">
+          {/* ✅ UPDATED NAV */}
+          <nav className="flex gap-6 text-sm font-medium">
             <Link href="/admin/about">About</Link>
             <Link href="/admin/officials">Officials</Link>
+            <Link href="/admin/offices">Offices</Link>
             <Link href="/admin/news">News</Link>
             <Link href="/admin/barangays">Barangays</Link>
+
             <button
               onClick={() => signOut(auth)}
               className="text-red-600"

@@ -1,27 +1,21 @@
+export const dynamic = "force-dynamic"
+
 import Card from "@/components/ui/card"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
-
-type HistoryItem = {
-  year: string
-  title: string
-  description: string
-}
-
-type AboutData = {
-  overview: string
-  role: string
-  mission: string
-  vision: string
-  values: string[]
-  sealMeaning: string
-  history: HistoryItem[]
-}
+import type { AboutData } from "@/types/about"
+import { headers } from "next/headers"
 
 async function getAbout(): Promise<AboutData | null> {
-  const snap = await getDoc(doc(db, "pages", "about"))
-  if (!snap.exists()) return null
-  return snap.data() as AboutData
+  const h = headers()
+  const host = h.get("host")
+  const protocol =
+    process.env.NODE_ENV === "development" ? "http" : "https"
+
+  const res = await fetch(`${protocol}://${host}/api/about`, {
+    cache: "no-store",
+  })
+
+  if (!res.ok) return null
+  return res.json()
 }
 
 export default async function AboutPage() {
@@ -134,7 +128,7 @@ export default async function AboutPage() {
   )
 }
 
-/* ================= HELPERS ================= */
+/* ================= HELPERS (UNCHANGED) ================= */
 
 function Section({
   title,
@@ -184,15 +178,7 @@ function InfoCard({
   text: string
 }) {
   return (
-    <Card
-      className="
-        p-10
-        transition-all
-        duration-300
-        hover:-translate-y-2
-        hover:shadow-2xl
-      "
-    >
+    <Card className="p-10 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
       <h3 className="text-xl font-semibold text-green-800 mb-3">
         {title}
       </h3>

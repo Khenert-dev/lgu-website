@@ -1,8 +1,9 @@
-import { collection, getDocs, query, where, limit } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+export const dynamic = "force-dynamic"
+
 import Card from "@/components/ui/card"
 import BarangayMap from "@/components/sections/BarangayMap"
 import { notFound } from "next/navigation"
+import { headers } from "next/headers"
 
 type Barangay = {
   name: string
@@ -14,16 +15,18 @@ type Barangay = {
 }
 
 async function getBarangay(slug: string): Promise<Barangay | null> {
-  const q = query(
-    collection(db, "barangays"),
-    where("slug", "==", slug),
-    limit(1)
+  const h = headers()
+  const host = h.get("host")
+  const protocol =
+    process.env.NODE_ENV === "development" ? "http" : "https"
+
+  const res = await fetch(
+    `${protocol}://${host}/api/barangay/${slug}`,
+    { cache: "no-store" }
   )
 
-  const snap = await getDocs(q)
-  if (snap.empty) return null
-
-  return snap.docs[0].data() as Barangay
+  if (!res.ok) return null
+  return res.json()
 }
 
 export default async function BarangayPage({
@@ -32,14 +35,14 @@ export default async function BarangayPage({
   params: { slug: string }
 }) {
   const barangay = await getBarangay(params.slug)
+
   if (!barangay) notFound()
 
   return (
     <main className="relative">
-      {/* background */}
       <div className="absolute inset-0 bg-gradient-to-b from-green-50 via-white to-green-50 pointer-events-none" />
 
-      {/* HERO IMAGE */}
+      {/* HERO */}
       {barangay.image && (
         <div className="relative h-[45vh]">
           <img
@@ -47,7 +50,7 @@ export default async function BarangayPage({
             alt={barangay.name}
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/35" />
+          <div className="absolute inset-0 bg-black/40" />
           <div className="relative z-10 max-w-6xl mx-auto px-8 h-full flex items-end pb-12">
             <h1 className="text-5xl md:text-6xl font-bold text-white">
               {barangay.name}
@@ -58,7 +61,7 @@ export default async function BarangayPage({
 
       <div className="relative max-w-6xl mx-auto px-8 py-24 space-y-28">
 
-        {/* ================= ABOUT ================= */}
+        {/* ABOUT */}
         <section className="max-w-4xl space-y-6">
           {!barangay.image && (
             <h1 className="text-5xl md:text-6xl font-bold text-green-900">
@@ -71,8 +74,8 @@ export default async function BarangayPage({
           </p>
         </section>
 
-        {/* ================= LOCATION ================= */}
-        {barangay.lat !== undefined && barangay.lng !== undefined && (
+        {/* LOCATION */}
+        {barangay.lat != null && barangay.lng != null && (
           <section className="space-y-12">
             <SectionHeader
               title="Location"
@@ -81,15 +84,10 @@ export default async function BarangayPage({
 
             <Card className="p-10 space-y-8">
               <div className="grid sm:grid-cols-2 gap-6 text-lg text-slate-700">
-                <p>
-                  <strong>Latitude:</strong> {barangay.lat}
-                </p>
-                <p>
-                  <strong>Longitude:</strong> {barangay.lng}
-                </p>
+                <p><strong>Latitude:</strong> {barangay.lat}</p>
+                <p><strong>Longitude:</strong> {barangay.lng}</p>
               </div>
 
-              {/* MAP (UX FIXED) */}
               <BarangayMap
                 lat={barangay.lat}
                 lng={barangay.lng}
@@ -103,7 +101,7 @@ export default async function BarangayPage({
   )
 }
 
-/* ================= HELPERS ================= */
+/* HELPERS */
 
 function SectionHeader({
   title,
@@ -118,9 +116,7 @@ function SectionHeader({
         {title}
       </h2>
       {subtitle && (
-        <p className="text-lg text-slate-600">
-          {subtitle}
-        </p>
+        <p className="text-lg text-slate-600">{subtitle}</p>
       )}
     </div>
   )
