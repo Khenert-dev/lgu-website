@@ -10,52 +10,59 @@ const stats = [
 export default function Stats() {
   return (
     <section className="relative py-24">
-      <div className="absolute inset-0 bg-gradient-to-b from-green-50 via-white to-green-50" />
-
-      <div className="relative max-w-7xl mx-auto px-8 grid gap-10 md:grid-cols-4 text-center">
+      <div className="max-w-7xl mx-auto px-8 grid gap-10 md:grid-cols-4 text-center">
         {stats.map((s, i) => (
           <div
             key={s.label}
             className="
-              relative group
+              group
+              relative
               rounded-3xl
-              border border-green-300/40
-              bg-white/70 backdrop-blur-xl
               p-10
-              shadow-lg
-              transition-all duration-500
+              bg-white
+              border border-slate-200/60
+              shadow-[0_18px_45px_-25px_rgba(0,0,0,0.25)]
+              transition-all duration-300
               hover:-translate-y-2
-              hover:shadow-2xl
-              hover:border-green-500/70
+              hover:shadow-[0_35px_80px_-30px_rgba(22,163,74,0.45)]
             "
           >
+            {/* GREEN GLOW RING */}
             <div
               className="
+                pointer-events-none
                 absolute inset-0
                 rounded-3xl
-                opacity-0 group-hover:opacity-100
-                transition-opacity duration-500
-                bg-gradient-to-br
-                from-green-200/40 via-transparent to-green-400/40
+                opacity-0
+                group-hover:opacity-100
+                transition-opacity duration-300
+                ring-1 ring-green-400/40
+                shadow-[0_0_0_1px_rgba(22,163,74,0.25),0_25px_60px_rgba(22,163,74,0.35)]
               "
             />
 
+            {/* TOP ACCENT LINE */}
             <span
               className={`
-                absolute top-0 left-0 h-1 w-full rounded-t-3xl
-                bg-gradient-to-r
-                ${i === 0 && "from-green-400 to-emerald-600"}
-                ${i === 1 && "from-emerald-400 to-teal-600"}
-                ${i === 2 && "from-teal-400 to-green-600"}
-                ${i === 3 && "from-green-500 to-lime-600"}
+                absolute top-0 left-6 right-6 h-[3px] rounded-full
+                ${
+                  i === 0
+                    ? "bg-gradient-to-r from-green-500 to-emerald-500"
+                    : i === 1
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500"
+                    : i === 2
+                    ? "bg-gradient-to-r from-teal-500 to-green-500"
+                    : "bg-gradient-to-r from-green-600 to-lime-500"
+                }
               `}
             />
 
+            {/* CONTENT */}
             <div className="relative z-10">
-              <p className="text-4xl font-bold text-green-800 tracking-tight">
+              <p className="text-4xl font-extrabold text-green-900 tracking-tight">
                 {s.value}
               </p>
-              <p className="mt-3 text-slate-600 text-lg">
+              <p className="mt-3 text-slate-700 text-lg font-medium">
                 {s.label}
               </p>
             </div>

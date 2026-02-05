@@ -24,15 +24,11 @@ const DEFAULT_CENTER: [number, number] = [16.45, 120.59]
 export default function LeafletMap({
   lat,
   lng,
-  name,
   markers = [],
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null)
-
-  // ⛔ do NOT type these — Leaflet typings are unreliable in Next
   const mapRef = useRef<any>(null)
   const markersLayerRef = useRef<any>(null)
-
   const router = useRouter()
 
   /* ================= INIT MAP ================= */
@@ -45,6 +41,7 @@ export default function LeafletMap({
       zoom: 13,
       scrollWheelZoom: false,
       zoomControl: false,
+      preferCanvas: true,
     })
 
     mapRef.current = map
@@ -57,9 +54,7 @@ export default function LeafletMap({
 
     markersLayerRef.current = L.layerGroup().addTo(map)
 
-    setTimeout(() => {
-      map.invalidateSize()
-    }, 300)
+    setTimeout(() => map.invalidateSize(), 300)
 
     return () => {
       map.remove()
@@ -77,13 +72,28 @@ export default function LeafletMap({
     const icon = L.divIcon({
       className: "",
       html: `
-        <div class="relative">
-          <span class="absolute -inset-2 rounded-full bg-green-400/30 animate-ping"></span>
-          <span class="relative block h-4 w-4 rounded-full bg-green-600 border-2 border-white shadow-lg"></span>
+        <div style="position:relative">
+          <span style="
+            position:absolute;
+            inset:-10px;
+            border-radius:9999px;
+            background:rgba(34,197,94,0.25);
+            animation:pulse 2s infinite;
+          "></span>
+          <span style="
+            position:relative;
+            display:block;
+            height:14px;
+            width:14px;
+            border-radius:9999px;
+            background:#16a34a;
+            border:2px solid white;
+            box-shadow:0 6px 16px rgba(0,0,0,0.35);
+          "></span>
         </div>
       `,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
+      iconSize: [28, 28],
+      iconAnchor: [14, 14],
     })
 
     for (const b of markers) {
@@ -94,8 +104,8 @@ export default function LeafletMap({
       })
 
       marker.bindPopup(`
-        <div style="text-align:center">
-          <strong style="color:#166534">${b.name}</strong>
+        <div style="text-align:center;padding:6px 8px">
+          <div style="font-weight:600;color:#14532d">${b.name}</div>
           <div style="font-size:12px;color:#64748b">View barangay</div>
         </div>
       `)
@@ -107,7 +117,10 @@ export default function LeafletMap({
   /* ================= FOCUS ================= */
   useEffect(() => {
     if (!mapRef.current || lat == null || lng == null) return
-    mapRef.current.flyTo([lat, lng], 15, { animate: true })
+    mapRef.current.flyTo([lat, lng], 15, {
+      animate: true,
+      duration: 1.2,
+    })
   }, [lat, lng])
 
   return (
@@ -116,12 +129,12 @@ export default function LeafletMap({
       className="
         relative
         w-full
-        h-[420px]
+        h-[520px]
         rounded-3xl
         overflow-hidden
-        border border-green-300/40
-        shadow-xl
         bg-white
+        ring-1 ring-slate-200
+        shadow-[0_45px_120px_-45px_rgba(0,0,0,0.9)]
       "
     />
   )

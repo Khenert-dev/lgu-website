@@ -32,62 +32,93 @@ export default async function BarangaysPage() {
   const barangays = await getBarangays()
 
   return (
-    <main className="relative overflow-hidden bg-slate-50">
-      {/* HERO */}
-      <section className="relative h-[48vh] flex items-center">
+    <main className="min-h-screen bg-gradient-to-b from-green-50 via-white to-green-50 overflow-hidden">
+
+      {/* ================= HERO ================= */}
+      <section className="relative h-[46vh] flex items-center">
         <div className="absolute inset-0 bg-gradient-to-br from-green-900 via-green-800 to-emerald-700" />
         <div className="absolute inset-0 opacity-20 bg-[url('/images/municipal-bg.jpg')] bg-cover bg-center" />
-        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-black/35" />
 
-        <div className="relative max-w-6xl mx-auto px-8 text-white">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight">
+        <div className="relative max-w-6xl mx-auto px-6 text-white">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
             Barangays of La Trinidad
           </h1>
-          <p className="mt-6 max-w-2xl text-lg md:text-xl text-green-100">
+          <p className="mt-6 max-w-2xl text-base md:text-xl text-green-100 leading-relaxed">
             Discover the communities, heritage, and leadership that shape the municipality.
           </p>
         </div>
       </section>
 
-      {/* CONTENT */}
-      <section className="relative max-w-6xl mx-auto px-8 py-28 space-y-20">
+      {/* ================= CONTENT ================= */}
+      <section className="relative max-w-6xl mx-auto px-6 py-20 space-y-16">
+
         {/* INTRO */}
         <div className="max-w-3xl space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-green-900">
+          <h2 className="text-2xl md:text-4xl font-bold text-green-900">
             Community Profiles
           </h2>
-          <p className="text-lg text-slate-700">
+          <p className="text-base md:text-lg text-slate-700 leading-relaxed">
             Each barangay has its own identity, culture, and local governance.
             Select a barangay to view detailed information.
           </p>
         </div>
 
         {/* GRID */}
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
           {barangays.map((b) => (
-            <Link key={b.slug} href={`/barangays/${b.slug}`}>
-              <Card className="group relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                {/* IMAGE (FIXED SIZE + CONSISTENT RATIO) */}
+            <Link key={b.slug} href={`/barangays/${b.slug}`} className="group">
+              <Card
+                className="
+                  relative
+                  h-full
+                  rounded-[36px]
+                  bg-white
+                  overflow-hidden
+                  transition-all duration-300
+                  shadow-[0_14px_36px_rgba(0,0,0,0.12)]
+                  hover:-translate-y-2
+                  hover:shadow-[0_36px_90px_rgba(16,185,129,0.35)]
+                "
+              >
+                {/* GLOW LAYER */}
+                <div
+                  className="
+                    pointer-events-none
+                    absolute -inset-1
+                    rounded-[40px]
+                    opacity-0
+                    blur-2xl
+                    transition
+                    group-hover:opacity-100
+                    bg-gradient-to-br
+                    from-green-400/35
+                    via-emerald-400/30
+                    to-green-500/35
+                  "
+                />
+
+                {/* IMAGE */}
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-green-100">
                   {b.image ? (
                     <img
                       src={b.image}
                       alt={b.name}
-                      className="absolute inset-0 h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-green-200 to-green-100" />
                   )}
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition" />
+                  <div className="absolute inset-0 bg-black/15 group-hover:bg-black/25 transition" />
                 </div>
 
                 {/* CONTENT */}
-                <div className="p-6 space-y-4">
-                  <h3 className="text-2xl font-semibold text-green-900 group-hover:text-green-700 transition">
+                <div className="relative z-10 p-8 space-y-4">
+                  <h3 className="text-xl font-semibold text-green-900 group-hover:text-green-700 transition">
                     {b.name}
                   </h3>
 
-                  <p className="text-slate-700 line-clamp-3 leading-relaxed">
+                  <p className="text-sm text-slate-700 leading-relaxed line-clamp-3">
                     {b.description}
                   </p>
 
@@ -104,6 +135,7 @@ export default async function BarangaysPage() {
             </Link>
           ))}
         </div>
+
       </section>
     </main>
   )

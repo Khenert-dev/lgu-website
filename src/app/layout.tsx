@@ -14,22 +14,58 @@ export default function RootLayout({
 
   return (
     <html lang="en" className="scroll-smooth">
-      <body className="relative min-h-screen bg-gradient-to-b from-green-50 via-white to-green-100 text-slate-900 antialiased">
-        {/* background layers */}
-        <div className="fixed inset-0 -z-10 bg-noise pointer-events-none" />
-        <div className="fixed inset-0 -z-10 bg-parallax pointer-events-none" />
+      <body className="relative min-h-screen antialiased overflow-x-hidden bg-black">
 
-        {/* PUBLIC NAVBAR (NOT ADMIN) */}
+        {/* ================= PUBLIC BACKGROUND ================= */}
         {!isAdmin && (
-          <div className="relative z-50">
+          <>
+            {/* BASE IMAGE */}
+            <div className="fixed inset-0 -z-50 bg-[url('/images/sunset.jpg')] bg-cover bg-center" />
+
+            {/* DARKENING LAYER */}
+            <div className="fixed inset-0 -z-40 bg-black/60" />
+
+            {/* TEXTURE / GRAIN */}
+            <div
+              className="
+                fixed inset-0 -z-30
+                bg-[url('/images/strawberry.png')]
+                bg-repeat
+                bg-[length:420px_420px]
+                opacity-[0.035]
+                mix-blend-soft-light
+                pointer-events-none
+              "
+            />
+          </>
+        )}
+
+        {/* ================= NAVBAR ================= */}
+        {!isAdmin && (
+          <div className="fixed top-0 left-0 right-0 z-[100]">
             <Navbar />
           </div>
         )}
 
-        {/* page content */}
-        <main className="relative z-10">
-          {children}
+        {/* ================= CONTENT SURFACE ================= */}
+        <main
+          className={`
+            relative z-10
+            ${isAdmin ? "bg-slate-50 text-slate-900" : ""}
+          `}
+        >
+          {/* CONTENT WRAPPER – THIS SAVES YOU */}
+          {!isAdmin ? (
+            <div className="pt-24">
+              <div className="min-h-screen bg-transparent">
+                {children}
+              </div>
+            </div>
+          ) : (
+            children
+          )}
         </main>
+
       </body>
     </html>
   )

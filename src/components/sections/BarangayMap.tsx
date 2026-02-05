@@ -12,48 +12,64 @@ type Props = {
 
 export default function BarangayMap({ lat, lng, name }: Props) {
   return (
-    <section className="relative max-w-7xl mx-auto px-8 py-28">
-      <div className="absolute inset-0 bg-gradient-to-b from-green-50 via-white to-green-50 pointer-events-none" />
+    <section className="relative max-w-7xl mx-auto px-6 py-16">
 
-      <div className="relative">
-        <h2 className="text-3xl md:text-4xl font-bold text-green-800 mb-10">
-          Barangay Map
-        </h2>
+      {/* HEADER */}
+      <div className="mb-8 flex items-end justify-between">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-green-900 tracking-tight">
+            Barangay Map
+          </h2>
+          <p className="mt-2 text-sm text-slate-600">
+            Explore barangay locations and boundaries
+          </p>
+        </div>
+      </div>
 
+      {/* MAP CONTAINER */}
+      <div
+        className="
+          relative h-[520px]
+          rounded-2xl
+          overflow-hidden
+          bg-white
+          border border-green-100
+          shadow-sm
+        "
+      >
+        {/* MAP */}
+        <LeafletMap lat={lat} lng={lng} name={name} />
+
+        {/* TOP GRADIENT FOR CONTROLS */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-green-900/20 to-transparent" />
+
+        {/* INFO / LEGEND */}
         <div
           className="
-            relative h-[450px]
-            rounded-3xl
-            overflow-hidden
-            border border-green-300/40
-            bg-white/60 backdrop-blur-xl
-            shadow-2xl
+            absolute bottom-5 left-5
+            max-w-xs
+            rounded-xl
+            bg-white
+            border border-green-100
+            px-5 py-4
+            shadow-md
           "
         >
-          <LeafletMap lat={lat} lng={lng} name={name} />
+          <p className="font-semibold text-green-900 mb-2">
+            {name ? "Selected Barangay" : "Map Legend"}
+          </p>
 
-          <div
-            className="
-              absolute bottom-5 left-5
-              rounded-2xl
-              border border-green-300/40
-              bg-white/80 backdrop-blur-md
-              px-5 py-4
-              shadow-lg
-            "
-          >
-            <p className="font-semibold text-green-800 mb-2">
-              {name ? "Focused Barangay" : "Legend"}
-            </p>
-
-            <div className="flex items-center gap-2 text-sm text-slate-700">
-              <span className="inline-block h-3 w-3 rounded-full bg-green-600 ring-2 ring-green-300" />
-              <span>
-                {name ?? "Barangay Center"}
-              </span>
-            </div>
+          <div className="flex items-center gap-3 text-sm text-slate-700">
+            <span className="relative flex h-3 w-3">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-40 animate-ping" />
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-green-600 ring-2 ring-green-200" />
+            </span>
+            <span>{name ?? "Barangay Center"}</span>
           </div>
         </div>
+
+        {/* BOTTOM DEPTH FADE */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-green-900/10 to-transparent" />
       </div>
     </section>
   )

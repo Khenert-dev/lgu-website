@@ -55,49 +55,77 @@ export default async function OfficesPage() {
   ])
 
   return (
-    <div className="relative">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 via-[#f7faf8] to-green-50">
 
       {/* ================= HEADER ================= */}
-      <section className="max-w-7xl mx-auto px-8 pt-24 pb-14 space-y-6 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-green-800">
+      <section className="max-w-7xl mx-auto px-6 pt-20 pb-14 text-center space-y-5">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-green-800">
           Municipal Offices
         </h1>
-        <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+        <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto">
           Offices that carry out public services and local governance
           functions of the Municipality of La Trinidad.
         </p>
       </section>
 
       {/* ================= OFFICE CARDS ================= */}
-      <section className="max-w-7xl mx-auto px-8 pb-20">
+      <section className="max-w-7xl mx-auto px-6 pb-20">
         {offices.length === 0 ? (
-          <p className="text-center text-slate-500 text-lg">
+          <p className="text-center text-slate-500 text-base">
             No offices published yet.
           </p>
         ) : (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
             {offices.map((o) => (
               <Card
                 key={o._id}
-                className="p-8 glass glass-hover space-y-4"
+                className="
+                  group relative
+                  rounded-[36px]
+                  bg-white
+                  p-10
+                  transition-all duration-300
+                  shadow-[0_12px_30px_rgba(0,0,0,0.12)]
+                  hover:-translate-y-2
+                  hover:shadow-[0_30px_80px_rgba(0,0,0,0.18)]
+                "
               >
-                {o.image && (
-                  <div className="h-20 w-20 rounded-xl bg-white/60 flex items-center justify-center">
+                {/* GLOW LAYER */}
+                <div
+                  className="
+                    pointer-events-none
+                    absolute -inset-1
+                    rounded-[40px]
+                    opacity-0
+                    blur-2xl
+                    transition
+                    duration-300
+                    group-hover:opacity-100
+                    bg-gradient-to-br
+                    from-green-400/40
+                    via-emerald-400/30
+                    to-green-500/40
+                  "
+                />
+
+                {/* CONTENT */}
+                <div className="relative z-10 flex flex-col gap-4">
+                  {o.image && (
                     <img
                       src={o.image}
                       alt={o.name}
-                      className="max-h-full max-w-full object-contain"
+                      className="h-14 w-14 object-contain"
                     />
-                  </div>
-                )}
+                  )}
 
-                <h2 className="text-xl font-semibold text-green-800">
-                  {o.name}
-                </h2>
+                  <h2 className="text-lg font-semibold text-green-800">
+                    {o.name}
+                  </h2>
 
-                <p className="text-slate-700 leading-relaxed">
-                  {o.description}
-                </p>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    {o.description}
+                  </p>
+                </div>
               </Card>
             ))}
           </div>
@@ -106,61 +134,53 @@ export default async function OfficesPage() {
 
       {/* ================= MUNICIPAL INFO ================= */}
       {(info.mission || info.vision || info.history) && (
-        <section className="relative py-24">
-          <div className="absolute inset-0 bg-gradient-to-b from-green-50/60 to-white" />
+        <section className="relative py-20">
+          <div className="absolute inset-0 bg-gradient-to-b from-green-100/40 to-white" />
 
-          <div className="relative max-w-4xl mx-auto px-8 space-y-20">
+          <div className="relative max-w-5xl mx-auto px-6 space-y-16">
 
             <header className="text-center space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold text-green-800">
+              <h2 className="text-2xl md:text-3xl font-bold text-green-800">
                 Municipal Direction & Background
               </h2>
-              <p className="text-slate-600 text-lg">
+              <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto">
                 The guiding principles and historical background of the
                 Municipality of La Trinidad.
               </p>
             </header>
 
-            {info.mission && (
-              <Card className="p-12 glass space-y-6">
-                <h3 className="text-2xl font-bold text-green-800">
-                  Mission
-                </h3>
-                <div className="h-1 w-14 rounded-full bg-green-600" />
-                <p className="text-lg text-slate-700 whitespace-pre-line">
-                  {info.mission}
-                </p>
-              </Card>
-            )}
-
-            {info.vision && (
-              <Card className="p-12 glass space-y-6">
-                <h3 className="text-2xl font-bold text-green-800">
-                  Vision
-                </h3>
-                <div className="h-1 w-14 rounded-full bg-green-600" />
-                <p className="text-lg text-slate-700 whitespace-pre-line">
-                  {info.vision}
-                </p>
-              </Card>
-            )}
-
-            {info.history && (
-              <Card className="p-12 glass space-y-6">
-                <h3 className="text-2xl font-bold text-green-800">
-                  History
-                </h3>
-                <div className="h-1 w-14 rounded-full bg-green-600" />
-                <p className="text-lg text-slate-700 whitespace-pre-line">
-                  {info.history}
-                </p>
-              </Card>
-            )}
+            {info.mission && <InfoBlock title="Mission" text={info.mission} />}
+            {info.vision && <InfoBlock title="Vision" text={info.vision} />}
+            {info.history && <InfoBlock title="History" text={info.history} />}
 
           </div>
         </section>
       )}
 
     </div>
+  )
+}
+
+/* ================= HELPERS ================= */
+
+function InfoBlock({ title, text }: { title: string; text: string }) {
+  return (
+    <Card
+      className="
+        relative
+        rounded-[36px]
+        bg-white
+        p-10
+        shadow-[0_12px_30px_rgba(0,0,0,0.12)]
+      "
+    >
+      <h3 className="text-xl font-semibold text-green-800">
+        {title}
+      </h3>
+      <div className="my-4 h-1 w-12 rounded-full bg-green-600" />
+      <p className="text-base text-slate-700 leading-relaxed whitespace-pre-line">
+        {text}
+      </p>
+    </Card>
   )
 }
