@@ -2,7 +2,7 @@
 
 const images = [
   {
-    src: "/images/Strawberry.png",
+    src: "/images/Strawberry.jpg",
     caption: "La Trinidad Strawberry Farm",
   },
   {
