@@ -121,7 +121,7 @@ export default function HomePage() {
       <section className="relative h-[40vh] overflow-hidden">
         <div
           className="absolute inset-0 bg-center bg-cover"
-          style={{ backgroundImage: "url('/images/strawberry.jpg')" }}
+          style={{ backgroundImage: "url('/images/Strawberry.jpg')" }}
         />
         <div className="absolute inset-0 bg-green-900/70" />
         <div className="relative z-10 h-full flex items-center justify-center text-center px-6">
@@ -160,7 +160,7 @@ export default function HomePage() {
       <section className="relative h-[35vh] overflow-hidden">
         <div
           className="absolute inset-0 bg-center bg-cover"
-          style={{ backgroundImage: "url('/images/bell.jpg')" }}
+          style={{ backgroundImage: "url('/images/Bell.jpg')" }}
         />
         <div className="absolute inset-0 bg-green-900/65" />
         <div className="relative z-10 h-full flex items-center justify-center text-center px-6">
