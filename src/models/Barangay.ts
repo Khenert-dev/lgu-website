@@ -1,4 +1,4 @@
-import mongoose, { Schema, models } from "mongoose"
+import { Schema, model, models } from "mongoose"
 
 const BarangaySchema = new Schema(
   {
@@ -8,9 +8,25 @@ const BarangaySchema = new Schema(
     image: String,
     lat: Number,
     lng: Number,
+
+    history: [
+      {
+        year: { type: String },
+        title: { type: String },
+        description: { type: String },
+      },
+    ],
+
+    officials: [
+      {
+        name: { type: String },
+        position: { type: String },
+        photo: { type: String },
+      },
+    ],
   },
   { timestamps: true }
 )
 
 export const Barangay =
-  models.Barangay || mongoose.model("Barangay", BarangaySchema)
+  models.Barangay || model("Barangay", BarangaySchema)

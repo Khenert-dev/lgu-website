@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server"
 import { connectDB } from "@/lib/mongoose"
 import { Barangay } from "@/models/Barangay"
+import { revalidatePath } from "next/cache"
+
+export const dynamic = "force-dynamic"
 
 export async function GET() {
   await connectDB()
@@ -10,23 +13,23 @@ export async function GET() {
 
 export async function POST(req: Request) {
   await connectDB()
+
   const body = await req.json()
+  const slug = body.slug.toLowerCase().trim()
 
-  if (!body.name || !body.slug || !body.description) {
-    return NextResponse.json(
-      { error: "Missing fields" },
-      { status: 400 }
-    )
-  }
+  const created = await Barangay.create({
+    name: body.name,
+    slug,
+    description: body.description,
+    image: body.image,
+    lat: body.lat,
+    lng: body.lng,
+    history: body.history ?? [],
+    officials: body.officials ?? [],
+  })
 
-  const exists = await Barangay.findOne({ slug: body.slug })
-  if (exists) {
-    return NextResponse.json(
-      { error: "Slug already exists" },
-      { status: 409 }
-    )
-  }
+  revalidatePath("/barangays")
+  revalidatePath(`/barangays/${slug}`)
 
-  const created = await Barangay.create(body)
   return NextResponse.json(created)
 }

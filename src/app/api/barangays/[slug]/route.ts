@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server"
 import { connectDB } from "@/lib/mongoose"
 import { Barangay } from "@/models/Barangay"
+import { revalidatePath } from "next/cache"
+
+export const dynamic = "force-dynamic"
 
 export async function GET(
   _: Request,
@@ -8,7 +11,8 @@ export async function GET(
 ) {
   await connectDB()
 
-  const item = await Barangay.findOne({ slug: params.slug }).lean()
+  const slug = params.slug.toLowerCase().trim()
+  const item = await Barangay.findOne({ slug }).lean()
 
   if (!item) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
@@ -23,16 +27,19 @@ export async function PUT(
 ) {
   await connectDB()
 
+  const slug = params.slug.toLowerCase().trim()
   const body = await req.json()
 
   const updated = await Barangay.findOneAndUpdate(
-    { slug: params.slug },
+    { slug },
     {
       name: body.name,
       description: body.description,
       image: body.image,
       lat: body.lat,
       lng: body.lng,
+      history: body.history ?? [],
+      officials: body.officials ?? [],
     },
     { new: true }
   )
@@ -40,6 +47,9 @@ export async function PUT(
   if (!updated) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
+
+  revalidatePath("/barangays")
+  revalidatePath(`/barangays/${slug}`)
 
   return NextResponse.json(updated)
 }
@@ -50,11 +60,14 @@ export async function DELETE(
 ) {
   await connectDB()
 
-  const res = await Barangay.deleteOne({ slug: params.slug })
+  const slug = params.slug.toLowerCase().trim()
+  const res = await Barangay.deleteOne({ slug })
 
   if (res.deletedCount === 0) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
+
+  revalidatePath("/barangays")
 
   return NextResponse.json({ deleted: true })
 }
