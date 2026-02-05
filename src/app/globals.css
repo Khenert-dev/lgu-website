@@ -27,38 +27,104 @@
 }
 
 /* ===============================
-   PREMIUM GLASS SYSTEM (LIGHT)
+   COMPONENTS
+================================ */
+@layer components {
+  .input {
+    @apply w-full rounded-md border border-slate-300
+           px-3 py-2
+           focus:outline-none
+           focus:ring-2 focus:ring-green-600/40
+           focus:border-green-600;
+  }
+
+  /* ---------- Card System ---------- */
+  .card {
+    @apply rounded-3xl bg-white/90 backdrop-blur
+           border border-slate-200/60
+           shadow-[0_10px_30px_rgba(0,0,0,0.08)];
+  }
+
+  .card-hover {
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.14);
+  }
+
+  /* ---------- Section Divider ---------- */
+  .section-divider {
+    position: relative;
+  }
+
+  .section-divider::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    width: 80%;
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(22, 101, 52, 0.25),
+      transparent
+    );
+  }
+}
+
+/* ===============================
+   UTILITIES / EFFECTS
 ================================ */
 @layer utilities {
+
+  /* ---------- Glass System ---------- */
   .glass {
     background: linear-gradient(
       to bottom right,
-      rgba(255, 255, 255, 0.85),
+      rgba(255, 255, 255, 0.9),
       rgba(255, 255, 255, 0.65)
     );
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(22px) saturate(170%);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
     border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      0 18px 50px rgba(0,0,0,0.12);
   }
 
   .glass-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
   }
 
   .glass-hover:hover {
     transform: translateY(-6px);
-    box-shadow: 0 28px 56px rgba(0, 0, 0, 0.12);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.7),
+      0 30px 70px rgba(0, 0, 0, 0.16);
   }
 
-  /* Soft entrance */
-  .fade-in {
-    animation: fadeIn 1s ease forwards;
+  /* ---------- Accent Glow (Buttons / CTA) ---------- */
+  .glow-green {
+    box-shadow:
+      0 0 0 rgba(22, 163, 74, 0),
+      0 10px 30px rgba(22, 163, 74, 0.35);
   }
 
-  @keyframes fadeIn {
+  .glow-green:hover {
+    box-shadow:
+      0 0 0 rgba(22, 163, 74, 0),
+      0 18px 50px rgba(22, 163, 74, 0.45);
+  }
+
+  /* ---------- Animations ---------- */
+  @keyframes fadeUp {
     from {
       opacity: 0;
-      transform: translateY(14px);
+      transform: translateY(16px);
     }
     to {
       opacity: 1;
@@ -66,9 +132,8 @@
     }
   }
 
-  /* Floating accent */
-  .floating {
-    animation: float 7s ease-in-out infinite;
+  .animate-fadeUp {
+    animation: fadeUp 0.7s ease forwards;
   }
 
   @keyframes float {
@@ -77,7 +142,34 @@
     100% { transform: translateY(0); }
   }
 
-  /* Optional: subtle grain for premium feel */
+  .floating {
+    animation: float 8s ease-in-out infinite;
+  }
+
+  /* ---------- Soft Grid Background ---------- */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* ---------- Light Beams (Hero Only) ---------- */
+  .bg-light-beams {
+    background:
+      radial-gradient(
+        600px 300px at 20% -10%,
+        rgba(34,197,94,0.18),
+        transparent 60%
+      ),
+      radial-gradient(
+        500px 260px at 80% 0%,
+        rgba(16,185,129,0.15),
+        transparent 60%
+      );
+  }
+
+  /* ---------- Subtle Grain ---------- */
   .bg-noise {
     pointer-events: none;
     position: fixed;
@@ -85,7 +177,12 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
     z-index: 0;
   }
-}
-.input {
-  @apply w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/40;
+
+  /* ---------- Accessibility ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fadeUp,
+    .floating {
+      animation: none !important;
+    }
+  }
 }

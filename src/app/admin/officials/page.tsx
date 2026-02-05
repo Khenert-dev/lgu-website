@@ -7,13 +7,26 @@ type Official = {
   role: string
   name: string
   image?: string
+  order?: number
 }
 
-const EMPTY = { role: "", name: "", image: "" }
+type OfficialForm = {
+  role: string
+  name: string
+  image?: string
+  order?: number
+}
+
+const EMPTY: OfficialForm = {
+  role: "",
+  name: "",
+  image: "",
+  order: undefined,
+}
 
 export default function AdminOfficialsPage() {
   const [items, setItems] = useState<Official[]>([])
-  const [form, setForm] = useState<any>(EMPTY)
+  const [form, setForm] = useState<OfficialForm>(EMPTY)
   const [editingId, setEditingId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -37,10 +50,20 @@ export default function AdminOfficialsPage() {
 
     const method = editingId ? "PUT" : "POST"
 
+    const payload: OfficialForm = {
+      role: form.role,
+      name: form.name,
+      image: form.image,
+    }
+
+    if (typeof form.order === "number" && !Number.isNaN(form.order)) {
+      payload.order = form.order
+    }
+
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify(payload),
     })
 
     if (!res.ok) {
@@ -58,6 +81,7 @@ export default function AdminOfficialsPage() {
       role: o.role,
       name: o.name,
       image: o.image || "",
+      order: o.order,
     })
     setEditingId(o._id)
   }
@@ -81,6 +105,7 @@ export default function AdminOfficialsPage() {
     <div className="max-w-4xl space-y-14">
       <h1 className="text-3xl font-bold">Manage Officials</h1>
 
+      {/* FORM */}
       <div className="border rounded-xl p-6 bg-white space-y-4">
         <input
           className="input"
@@ -101,9 +126,23 @@ export default function AdminOfficialsPage() {
         />
 
         <input
+          type="number"
+          className="input"
+          placeholder="Display order (lower = higher)"
+          value={form.order ?? ""}
+          onChange={(e) => {
+            const v = e.target.value
+            setForm({
+              ...form,
+              order: v === "" ? undefined : Number(v),
+            })
+          }}
+        />
+
+        <input
           className="input"
           placeholder="Image URL (optional)"
-          value={form.image}
+          value={form.image || ""}
           onChange={(e) =>
             setForm({ ...form, image: e.target.value })
           }
@@ -131,6 +170,7 @@ export default function AdminOfficialsPage() {
         </div>
       </div>
 
+      {/* LIST */}
       <div className="space-y-3">
         {items.map((o) => (
           <div
@@ -138,8 +178,12 @@ export default function AdminOfficialsPage() {
             className="flex justify-between items-center border rounded p-4 bg-white"
           >
             <div>
-              <p className="font-semibold">{o.name}</p>
-              <p className="text-sm text-slate-500">{o.role}</p>
+              <p className="font-semibold">
+                {o.order ?? 0}. {o.name}
+              </p>
+              <p className="text-sm text-slate-500">
+                {o.role}
+              </p>
             </div>
 
             <div className="flex gap-4 text-sm">

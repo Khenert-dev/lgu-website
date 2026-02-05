@@ -21,6 +21,7 @@ const EMPTY: Barangay = {
 export default function AdminBarangayPage() {
   const [items, setItems] = useState<Barangay[]>([])
   const [form, setForm] = useState<Barangay>(EMPTY)
+  const [editingSlug, setEditingSlug] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -48,10 +49,19 @@ export default function AdminBarangayPage() {
 
     setSaving(true)
 
-    const res = await fetch("/api/barangays", {
-      method: "POST",
+    const url = editingSlug
+      ? `/api/barangays/${editingSlug}`
+      : "/api/barangays"
+
+    const method = editingSlug ? "PUT" : "POST"
+
+    const res = await fetch(url, {
+      method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        slug: form.slug.toLowerCase().trim(),
+      }),
     })
 
     setSaving(false)
@@ -62,7 +72,13 @@ export default function AdminBarangayPage() {
     }
 
     setForm(EMPTY)
+    setEditingSlug(null)
     load()
+  }
+
+  function edit(b: Barangay) {
+    setForm(b)
+    setEditingSlug(b.slug)
   }
 
   async function remove(slug: string) {
@@ -93,18 +109,18 @@ export default function AdminBarangayPage() {
             setForm({
               ...form,
               name: e.target.value,
-              slug: slugify(e.target.value),
+              slug: editingSlug
+                ? form.slug
+                : slugify(e.target.value),
             })
           }
         />
 
         <input
-          className="input"
+          className="input bg-slate-100 cursor-not-allowed"
           placeholder="Slug"
           value={form.slug}
-          onChange={(e) =>
-            setForm({ ...form, slug: e.target.value })
-          }
+          disabled
         />
 
         <textarea
@@ -117,13 +133,64 @@ export default function AdminBarangayPage() {
           }
         />
 
-        <button
-          onClick={save}
-          disabled={saving}
-          className="bg-green-700 text-white px-6 py-3 rounded"
-        >
-          {saving ? "Saving…" : "Add Barangay"}
-        </button>
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            type="number"
+            className="input"
+            placeholder="Latitude"
+            value={form.lat ?? ""}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                lat:
+                  e.target.value === ""
+                    ? undefined
+                    : Number(e.target.value),
+              })
+            }
+          />
+          <input
+            type="number"
+            className="input"
+            placeholder="Longitude"
+            value={form.lng ?? ""}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                lng:
+                  e.target.value === ""
+                    ? undefined
+                    : Number(e.target.value),
+              })
+            }
+          />
+        </div>
+
+        <div className="flex gap-3">
+          {editingSlug && (
+            <button
+              onClick={() => {
+                setForm(EMPTY)
+                setEditingSlug(null)
+              }}
+              className="border px-5 py-2 rounded"
+            >
+              Cancel
+            </button>
+          )}
+
+          <button
+            onClick={save}
+            disabled={saving}
+            className="bg-green-700 text-white px-6 py-3 rounded"
+          >
+            {saving
+              ? "Saving…"
+              : editingSlug
+              ? "Update Barangay"
+              : "Add Barangay"}
+          </button>
+        </div>
       </div>
 
       <div className="space-y-3">
@@ -138,12 +205,21 @@ export default function AdminBarangayPage() {
                 /barangays/{b.slug}
               </p>
             </div>
-            <button
-              onClick={() => remove(b.slug)}
-              className="text-red-600 text-sm"
-            >
-              Delete
-            </button>
+
+            <div className="flex gap-3 text-sm">
+              <button
+                onClick={() => edit(b)}
+                className="text-blue-600"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => remove(b.slug)}
+                className="text-red-600"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>

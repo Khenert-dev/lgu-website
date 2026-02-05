@@ -1,40 +1,28 @@
+"use client"
+
 import { ButtonHTMLAttributes } from "react"
+import clsx from "clsx"
 
-export default function Button(
-  props: ButtonHTMLAttributes<HTMLButtonElement>
-) {
-  const { className = "", ...rest } = props
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: "solid" | "outline"
+}
 
+export default function Button({
+  variant = "solid",
+  className,
+  ...props
+}: ButtonProps) {
   return (
     <button
-      {...rest}
-      className={`
-        relative overflow-hidden
-        rounded-xl
-        bg-gradient-to-r from-green-600 to-green-700
-        px-8 py-4
-        text-white text-base font-semibold
-        shadow-lg
-        transition-all duration-300
-        hover:from-green-700 hover:to-green-800
-        hover:-translate-y-0.5
-        hover:shadow-2xl
-        focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2
-        active:translate-y-0 active:shadow-md
-        disabled:opacity-60 disabled:cursor-not-allowed
-        ${className}
-      `}
-    >
-      <span className="relative z-10">{props.children}</span>
-
-      <span
-        className="
-          absolute inset-0
-          opacity-0 hover:opacity-100
-          transition-opacity duration-300
-          bg-gradient-to-br from-white/20 via-transparent to-black/10
-        "
-      />
-    </button>
+      {...props}
+      className={clsx(
+        "rounded-lg font-semibold transition focus:outline-none focus:ring-4 focus:ring-green-400/40",
+        variant === "solid" &&
+          "bg-green-700 text-white hover:bg-green-800 px-8 py-4",
+        variant === "outline" &&
+          "border-2 border-green-700 text-green-700 hover:bg-green-50 px-8 py-4",
+        className
+      )}
+    />
   )
 }

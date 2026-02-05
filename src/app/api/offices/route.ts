@@ -5,7 +5,9 @@ import { Office } from "@/models/Office"
 export async function GET() {
   try {
     await connectDB()
-    const items = await Office.find().sort({ name: 1 }).lean()
+    const items = await Office.find()
+      .sort({ order: 1 })
+      .lean()
     return NextResponse.json(items)
   } catch (err) {
     console.error("OFFICES GET ERROR:", err)
@@ -28,12 +30,18 @@ export async function POST(req: Request) {
       )
     }
 
-    const created = await Office.create({
+    const doc: any = {
       name: body.name,
       description: body.description,
       image: body.image,
-    })
+    }
 
+    // ✅ ONLY set order if it's a valid number
+    if (typeof body.order === "number" && !Number.isNaN(body.order)) {
+      doc.order = body.order
+    }
+
+    const created = await Office.create(doc)
     return NextResponse.json(created)
   } catch (err) {
     console.error("OFFICES POST ERROR:", err)

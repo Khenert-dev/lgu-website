@@ -7,12 +7,14 @@ type Office = {
   name: string
   description: string
   image?: string
+  order?: number
 }
 
 const EMPTY: Office = {
   name: "",
   description: "",
   image: "",
+  order: 0,
 }
 
 export default function AdminOfficesPage() {
@@ -20,6 +22,7 @@ export default function AdminOfficesPage() {
   const [form, setForm] = useState<Office>(EMPTY)
   const [file, setFile] = useState<File | null>(null)
   const [saving, setSaving] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
 
   useEffect(() => {
     load()
@@ -41,10 +44,7 @@ export default function AdminOfficesPage() {
       body: data,
     })
 
-    if (!res.ok) {
-      throw new Error("Upload failed")
-    }
-
+    if (!res.ok) throw new Error("Upload failed")
     const json = await res.json()
     return json.url
   }
@@ -60,45 +60,57 @@ export default function AdminOfficesPage() {
     try {
       const image = await uploadImage()
 
-      const res = await fetch("/api/offices", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          description: form.description,
-          image,
-        }),
-      })
+      const res = await fetch(
+        editingId ? `/api/offices/${editingId}` : "/api/offices",
+        {
+          method: editingId ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.name,
+            description: form.description,
+            image,
+            order: form.order,
+          }),
+        }
+      )
 
-      if (!res.ok) {
-        throw new Error("Save failed")
-      }
+      if (!res.ok) throw new Error("Save failed")
 
-      setForm(EMPTY)
-      setFile(null)
-      await load()
-    } catch (err) {
-      console.error(err)
+      reset()
+      load()
+    } catch {
       alert("Failed to save office")
     } finally {
-      setSaving(false) // ✅ GUARANTEED RESET
+      setSaving(false)
     }
+  }
+
+  function edit(o: Office) {
+    setForm(o)
+    setEditingId(o._id!)
+    setFile(null)
+  }
+
+  function reset() {
+    setForm(EMPTY)
+    setEditingId(null)
+    setFile(null)
   }
 
   async function remove(id?: string) {
     if (!id) return
     if (!confirm("Delete this office?")) return
-
     await fetch(`/api/offices/${id}`, { method: "DELETE" })
     load()
   }
 
   return (
-    <div className="max-w-4xl space-y-16">
+    <div className="max-w-4xl space-y-14">
+
       <h1 className="text-3xl font-bold">Manage Offices</h1>
 
       {/* FORM */}
-      <div className="rounded-2xl border bg-white p-8 space-y-4">
+      <div className="rounded-3xl border bg-white p-8 space-y-5">
         <input
           className="input"
           placeholder="Office name"
@@ -115,6 +127,16 @@ export default function AdminOfficesPage() {
           value={form.description}
           onChange={(e) =>
             setForm({ ...form, description: e.target.value })
+          }
+        />
+
+        <input
+          type="number"
+          className="input"
+          placeholder="Display order (lower = higher)"
+          value={form.order ?? ""}
+          onChange={(e) =>
+            setForm({ ...form, order: Number(e.target.value) })
           }
         />
 
@@ -142,13 +164,28 @@ export default function AdminOfficesPage() {
           />
         )}
 
-        <button
-          onClick={save}
-          disabled={saving}
-          className="bg-green-700 text-white px-6 py-3 rounded"
-        >
-          {saving ? "Saving…" : "Add Office"}
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={save}
+            disabled={saving}
+            className="bg-green-700 text-white px-6 py-3 rounded"
+          >
+            {saving
+              ? "Saving…"
+              : editingId
+              ? "Update Office"
+              : "Add Office"}
+          </button>
+
+          {editingId && (
+            <button
+              onClick={reset}
+              className="border px-6 py-3 rounded"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </div>
 
       {/* LIST */}
@@ -158,16 +195,33 @@ export default function AdminOfficesPage() {
             key={o._id}
             className="flex justify-between items-center rounded-xl border bg-white p-4"
           >
-            <p className="font-semibold">{o.name}</p>
-            <button
-              onClick={() => remove(o._id)}
-              className="text-red-600 text-sm"
-            >
-              Delete
-            </button>
+            <div>
+              <p className="font-semibold">
+                {o.order}. {o.name}
+              </p>
+              <p className="text-sm text-slate-600">
+                {o.description}
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => edit(o)}
+                className="text-green-700 text-sm"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => remove(o._id)}
+                className="text-red-600 text-sm"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>
+
     </div>
   )
 }

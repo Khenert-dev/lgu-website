@@ -4,7 +4,11 @@ import { Official } from "@/models/Official"
 
 export async function GET() {
   await connectDB()
-  const items = await Official.find().sort({ role: 1 }).lean()
+
+  const items = await Official.find()
+    .sort({ order: 1, role: 1 })
+    .lean()
+
   return NextResponse.json(items)
 }
 
@@ -19,6 +23,17 @@ export async function POST(req: Request) {
     )
   }
 
-  const created = await Official.create(body)
+  const doc: any = {
+    role: body.role,
+    name: body.name,
+    image: body.image,
+  }
+
+  // ✅ only set order if valid
+  if (typeof body.order === "number" && !Number.isNaN(body.order)) {
+    doc.order = body.order
+  }
+
+  const created = await Official.create(doc)
   return NextResponse.json(created)
 }
