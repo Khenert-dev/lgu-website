@@ -22,7 +22,7 @@ const slides = [
 const heroImages = [
   "/images/strawberry.jpg",
   "/images/sunset.jpg",
-  "/images/bell.jng",
+  "/images/bell.jpg",
 ]
 
 const fbPages = [
