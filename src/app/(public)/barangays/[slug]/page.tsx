@@ -45,12 +45,12 @@ export default async function BarangayPage({
   if (!barangay) notFound()
 
   return (
-    <main className="bg-gradient-to-b from-green-50 via-white to-green-100/40">
+    <main className="bg-white text-slate-800">
 
-      {/* ================= HERO ================= */}
-      {barangay.images?.length && (
+      {/* HERO */}
+      {barangay.images && barangay.images.length > 0 && (
         <section className="relative h-[50vh] overflow-hidden">
-          <div className="flex snap-x snap-mandatory h-full overflow-x-auto">
+          <div className="flex h-full overflow-x-auto snap-x snap-mandatory">
             {barangay.images.map((img, i) => (
               <div key={i} className="relative min-w-full snap-center">
                 <img
@@ -58,14 +58,14 @@ export default async function BarangayPage({
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/45" />
+                <div className="absolute inset-0 bg-black/50" />
               </div>
             ))}
           </div>
 
           <div className="absolute inset-0 flex items-end">
             <div className="max-w-6xl mx-auto w-full px-6 pb-12">
-              <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight">
+              <h1 className="text-4xl md:text-6xl font-extrabold text-white">
                 {barangay.name}
               </h1>
             </div>
@@ -73,11 +73,11 @@ export default async function BarangayPage({
         </section>
       )}
 
-      {/* ================= CONTENT ================= */}
+      {/* CONTENT */}
       <div className="max-w-6xl mx-auto px-6 py-20 space-y-24">
 
         {/* INTRO */}
-        <section className="grid gap-12 md:grid-cols-5 items-start">
+        <section className="grid gap-12 md:grid-cols-5">
           <div className="md:col-span-3 space-y-6">
             {!barangay.images && (
               <h1 className="text-4xl font-extrabold text-green-900">
@@ -90,8 +90,7 @@ export default async function BarangayPage({
             </p>
           </div>
 
-          {/* DETAILS — QUIET, SECONDARY */}
-          <Card className="md:col-span-2 rounded-[28px] bg-white p-6 shadow-sm">
+          <Card className="md:col-span-2 rounded-2xl bg-slate-50 p-6 border border-slate-200">
             <h3 className="text-sm font-semibold text-green-800 mb-3 uppercase tracking-wide">
               Barangay Details
             </h3>
@@ -103,7 +102,7 @@ export default async function BarangayPage({
               </div>
             )}
 
-            {barangay.famousFor?.length && (
+            {barangay.famousFor && barangay.famousFor.length > 0 && (
               <div className="mt-4">
                 <p className="text-sm font-semibold text-green-700 mb-1">
                   Known for
@@ -118,8 +117,8 @@ export default async function BarangayPage({
           </Card>
         </section>
 
-        {/* HISTORY — CLEAN TIMELINE */}
-        {barangay.history?.length && (
+        {/* HISTORY */}
+        {barangay.history && barangay.history.length > 0 && (
           <section className="space-y-12">
             <SectionHeader title="History" />
 
@@ -132,7 +131,7 @@ export default async function BarangayPage({
                   <h3 className="text-lg font-semibold text-slate-900">
                     {h.title}
                   </h3>
-                  <p className="mt-2 text-slate-700 leading-relaxed">
+                  <p className="mt-2 text-slate-700">
                     {h.description}
                   </p>
                 </div>
@@ -141,8 +140,8 @@ export default async function BarangayPage({
           </section>
         )}
 
-        {/* OFFICIALS — SUBTLE CARDS */}
-        {barangay.officials?.length && (
+        {/* OFFICIALS */}
+        {barangay.officials && barangay.officials.length > 0 && (
           <section className="space-y-12">
             <SectionHeader title="Barangay Officials" />
 
@@ -150,15 +149,7 @@ export default async function BarangayPage({
               {barangay.officials.map((o, i) => (
                 <Card
                   key={i}
-                  className="
-                    rounded-[28px]
-                    bg-white
-                    p-6
-                    text-center
-                    shadow-sm
-                    hover:shadow-md
-                    transition
-                  "
+                  className="rounded-2xl bg-white p-6 text-center border border-slate-200 hover:shadow-md transition"
                 >
                   {o.photo ? (
                     <img
@@ -182,12 +173,12 @@ export default async function BarangayPage({
           </section>
         )}
 
-        {/* MAP — FINAL SECTION */}
+        {/* MAP */}
         {barangay.lat != null && barangay.lng != null && (
           <section className="space-y-10">
             <SectionHeader title="Location" />
 
-            <Card className="rounded-[28px] p-4 shadow-md">
+            <Card className="rounded-2xl p-4 border border-slate-200">
               <BarangayMap
                 lat={barangay.lat}
                 lng={barangay.lng}

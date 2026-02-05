@@ -20,7 +20,7 @@ export default function RootLayout({
         {!isAdmin && (
           <>
             {/* BASE IMAGE */}
-            <div className="fixed inset-0 -z-50 bg-[url('/images/sunset.jpg')] bg-cover bg-center" />
+            <div className="fixed inset-0 -z-50 bg-[url('/images/aerial.jpg')] bg-cover bg-center" />
 
             {/* DARKENING LAYER */}
             <div className="fixed inset-0 -z-40 bg-black/60" />
