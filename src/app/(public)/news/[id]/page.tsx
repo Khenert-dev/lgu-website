@@ -36,42 +36,68 @@ export default async function NewsDetailPage({
   if (!item) notFound()
 
   return (
-    <section className="relative max-w-4xl mx-auto px-8 py-32 space-y-12">
-      {/* BACK BUTTON */}
-      <div>
+    <main className="relative min-h-screen bg-gradient-to-b from-green-50 via-white to-green-100/40">
+
+      {/* SOFT BACKGROUND */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-green-300/25 blur-3xl" />
+        <div className="absolute top-32 -right-32 h-[360px] w-[360px] rounded-full bg-emerald-300/25 blur-3xl" />
+      </div>
+
+      <section className="relative max-w-4xl mx-auto px-6 py-28 space-y-14">
+
+        {/* BACK */}
         <Link
           href="/news"
-          className="inline-flex items-center gap-2 text-green-700 font-semibold hover:underline"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-green-700 hover:text-green-800 transition"
         >
           ← Back to News
         </Link>
-      </div>
 
-      {/* TITLE */}
-      <header className="space-y-4">
-        <h1 className="text-4xl md:text-5xl font-bold text-green-900">
-          {item.title}
-        </h1>
-      </header>
+        {/* HEADER */}
+        <header className="space-y-6">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-green-900 leading-tight">
+            {item.title}
+          </h1>
 
-      {/* CONTENT */}
-      <Card className="overflow-hidden">
-        {item.image && (
-          <div className="relative w-full aspect-[16/9] bg-slate-200">
-            <img
-              src={item.image}
-              alt={item.title}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+          {item.createdAt && (
+            <p className="text-sm text-slate-500">
+              {new Date(item.createdAt).toLocaleDateString()}
+            </p>
+          )}
+        </header>
+
+        {/* CONTENT CARD */}
+        <Card
+          className="
+            relative
+            overflow-hidden
+            rounded-[36px]
+            bg-white
+            shadow-[0_20px_60px_-35px_rgba(0,0,0,0.35)]
+          "
+        >
+          {/* IMAGE */}
+          {item.image && (
+            <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-200">
+              <img
+                src={item.image}
+                alt={item.title}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-transparent" />
+            </div>
+          )}
+
+          {/* BODY */}
+          <div className="p-10 md:p-14">
+            <p className="text-base md:text-lg text-slate-700 leading-relaxed whitespace-pre-line">
+              {item.body}
+            </p>
           </div>
-        )}
+        </Card>
 
-        <div className="p-10">
-          <p className="text-lg text-slate-700 whitespace-pre-line leading-relaxed">
-            {item.body}
-          </p>
-        </div>
-      </Card>
-    </section>
+      </section>
+    </main>
   )
 }

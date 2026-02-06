@@ -31,7 +31,6 @@
 ================================ */
 @layer components {
 
-  /* ---------- FORM ---------- */
   .input {
     @apply w-full rounded-lg
            border border-slate-300/70
@@ -42,7 +41,6 @@
            focus:border-green-600;
   }
 
-  /* ---------- CARD SYSTEM (PREMIUM) ---------- */
   .card {
     @apply relative overflow-hidden
            rounded-3xl
@@ -62,7 +60,6 @@
       0 0 0 1px rgba(22,163,74,0.25);
   }
 
-  /* ---------- SECTION DIVIDER ---------- */
   .section-divider {
     position: relative;
   }
@@ -89,7 +86,6 @@
 ================================ */
 @layer utilities {
 
-  /* ---------- GLASS (CONTROLLED / READABLE) ---------- */
   .glass {
     background: linear-gradient(
       to bottom right,
@@ -115,20 +111,16 @@
       0 30px 70px rgba(0, 0, 0, 0.16);
   }
 
-  /* ---------- GREEN GLOW (CARDS / CTA) ---------- */
   .glow-green {
     box-shadow:
-      0 0 0 rgba(22, 163, 74, 0),
       0 14px 40px rgba(22, 163, 74, 0.38);
   }
 
   .glow-green:hover {
     box-shadow:
-      0 0 0 rgba(22, 163, 74, 0),
       0 22px 65px rgba(22, 163, 74, 0.48);
   }
 
-  /* ---------- ACCENT RING ---------- */
   .ring-accent {
     box-shadow:
       inset 0 0 0 1px rgba(22,163,74,0.35),
@@ -151,18 +143,26 @@
     animation: fadeUp 0.7s cubic-bezier(.21,.61,.35,1) forwards;
   }
 
-  /* ---------- FLOAT ---------- */
+  /* ---------- FLOATING CIRCLES ---------- */
   @keyframes float {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-14px); }
-    100% { transform: translateY(0); }
+    0% {
+      transform: translateY(0) translateX(0);
+    }
+    50% {
+      transform: translateY(-80px) translateX(60px);
+    }
+    100% {
+      transform: translateY(0) translateX(0);
+    }
   }
 
-  .floating {
-    animation: float 9s ease-in-out infinite;
+  .animate-float {
+    animation-name: float;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
   }
 
-  /* ---------- SOFT GRID ---------- */
+  /* ---------- GRID ---------- */
   .bg-grid {
     background-image:
       linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
@@ -170,7 +170,7 @@
     background-size: 48px 48px;
   }
 
-  /* ---------- LIGHT BEAMS (HERO ONLY) ---------- */
+  /* ---------- LIGHT BEAMS ---------- */
   .bg-light-beams {
     background:
       radial-gradient(
@@ -185,7 +185,7 @@
       );
   }
 
-  /* ---------- FILM GRAIN ---------- */
+  /* ---------- NOISE ---------- */
   .bg-noise {
     pointer-events: none;
     position: fixed;
@@ -194,10 +194,9 @@
     z-index: 0;
   }
 
-  /* ---------- ACCESSIBILITY ---------- */
   @media (prefers-reduced-motion: reduce) {
     .animate-fadeUp,
-    .floating {
+    .animate-float {
       animation: none !important;
     }
   }

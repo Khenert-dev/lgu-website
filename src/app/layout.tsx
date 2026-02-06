@@ -3,6 +3,7 @@
 import "./globals.css"
 import Navbar from "@/components/layout/Navbar"
 import { usePathname } from "next/navigation"
+import FloatingCircles from "@/components/effects/FloatingCircles"
 
 export default function RootLayout({
   children,
@@ -16,28 +17,34 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className="relative min-h-screen antialiased overflow-x-hidden bg-black">
 
-        {/* ================= PUBLIC BACKGROUND ================= */}
+        {/* ================= GLOBAL BACKGROUND (PUBLIC ONLY) ================= */}
         {!isAdmin && (
           <>
             {/* BASE IMAGE */}
-            <div className="fixed inset-0 -z-50 bg-[url('/images/aerial.jpg')] bg-cover bg-center" />
+            <div className="fixed inset-0 z-[-60] bg-[url('/images/aerial.jpg')] bg-cover bg-center" />
 
-            {/* DARKENING LAYER */}
-            <div className="fixed inset-0 -z-40 bg-black/60" />
+            {/* DARK OVERLAY */}
+            <div className="fixed inset-0 z-[-50] bg-black/65" />
 
-            {/* TEXTURE / GRAIN */}
+            {/* NOISE */}
             <div
               className="
-                fixed inset-0 -z-30
-                bg-[url('/images/strawberry.png')]
+                fixed inset-0 z-[-40]
+                bg-[url('/images/noise.png')]
                 bg-repeat
-                bg-[length:420px_420px]
-                opacity-[0.035]
+                opacity-[0.04]
                 mix-blend-soft-light
                 pointer-events-none
               "
             />
           </>
+        )}
+
+        {/* ================= FLOATING CIRCLES (VISIBLE LAYER) ================= */}
+        {!isAdmin && (
+          <div className="fixed inset-0 z-[-20] pointer-events-none">
+            <FloatingCircles />
+          </div>
         )}
 
         {/* ================= NAVBAR ================= */}
@@ -47,17 +54,15 @@ export default function RootLayout({
           </div>
         )}
 
-        {/* ================= CONTENT SURFACE ================= */}
+        {/* ================= PAGE CONTENT ================= */}
         <main
-          className={`
-            relative z-10
-            ${isAdmin ? "bg-slate-50 text-slate-900" : ""}
-          `}
+          className={`relative z-10 ${
+            isAdmin ? "bg-slate-50 text-slate-900" : ""
+          }`}
         >
-          {/* CONTENT WRAPPER – THIS SAVES YOU */}
           {!isAdmin ? (
             <div className="pt-24">
-              <div className="min-h-screen bg-transparent">
+              <div className="relative min-h-screen">
                 {children}
               </div>
             </div>

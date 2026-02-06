@@ -78,7 +78,6 @@ export default function HomePage() {
             }`}
           />
         ))}
-
         <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/60 to-black/85" />
 
         <div className="relative z-10 h-full flex items-center">
@@ -117,12 +116,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PAGE BREAKER 1 */}
+      {/* PAGE BREAKER */}
       <section className="relative h-[40vh] overflow-hidden">
-        <div
-          className="absolute inset-0 bg-center bg-cover"
-          style={{ backgroundImage: "url('/images/Strawberry.jpg')" }}
-        />
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/Strawberry.jpg')" }} />
         <div className="absolute inset-0 bg-green-900/70" />
         <div className="relative z-10 h-full flex items-center justify-center text-center px-6">
           <h2 className="text-3xl md:text-4xl font-extrabold text-white max-w-4xl">
@@ -132,20 +128,64 @@ export default function HomePage() {
       </section>
 
       {/* NEWS */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8">
-          {news.map((n) => (
-            <Link key={n._id} href={`/news/${n._id}`}>
-              <div className="card card-hover p-8 h-full">
-                <h3 className="text-lg font-semibold text-slate-900">
-                  {n.title}
-                </h3>
-                <p className="mt-4 text-sm text-slate-600 line-clamp-4">
-                  {n.body}
-                </p>
-              </div>
+      <section className="relative py-20 bg-gradient-to-b from-white to-green-50">
+        <div className="max-w-7xl mx-auto px-6 space-y-12">
+
+          <div className="flex items-end justify-between border-b border-green-200/70 pb-6">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-green-900">
+                News & Announcements
+              </h2>
+              <p className="mt-2 text-sm text-slate-600">
+                Official updates and municipal advisories
+              </p>
+            </div>
+
+            <Link href="/news">
+              <Button className="bg-green-700 hover:bg-green-800 text-white shadow-md">
+                View all news
+              </Button>
             </Link>
-          ))}
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-10">
+            {news.map((n) => (
+              <Link key={n._id} href={`/news/${n._id}`} className="group">
+                <div
+                  className="
+                    relative
+                    h-full
+                    rounded-3xl
+                    bg-white
+                    p-8
+                    border
+                    border-slate-200
+                    shadow-[0_10px_30px_-24px_rgba(0,0,0,0.35)]
+                    transition-all
+                    duration-300
+                    hover:-translate-y-2
+                    hover:border-green-300
+                    hover:shadow-[0_35px_90px_-35px_rgba(16,185,129,0.45)]
+                  "
+                >
+                  <div className="absolute left-8 top-0 h-1 w-12 rounded-full bg-green-600" />
+
+                  <h3 className="mt-4 text-lg font-semibold text-slate-900 group-hover:text-green-800 transition">
+                    {n.title}
+                  </h3>
+
+                  <p className="mt-4 text-sm text-slate-600 line-clamp-4 leading-relaxed">
+                    {n.body}
+                  </p>
+
+                  <div className="mt-6 text-sm font-semibold text-green-700 group-hover:text-green-600 transition">
+                    Read more →
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
         </div>
       </section>
 
@@ -156,12 +196,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PAGE BREAKER 2 */}
+      {/* PAGE BREAKER */}
       <section className="relative h-[35vh] overflow-hidden">
-        <div
-          className="absolute inset-0 bg-center bg-cover"
-          style={{ backgroundImage: "url('/images/Bell.jpg')" }}
-        />
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/Bell.jpg')" }} />
         <div className="absolute inset-0 bg-green-900/65" />
         <div className="relative z-10 h-full flex items-center justify-center text-center px-6">
           <h2 className="text-3xl md:text-4xl font-extrabold text-white max-w-4xl">
@@ -178,11 +215,26 @@ export default function HomePage() {
             { title: "Public Services", text: "Health, education, emergency, and municipal offices." },
             { title: "Culture & Heritage", text: "Festivals, landmarks, and community identity." },
           ].map((c) => (
-            <div key={c.title} className="card card-hover p-10 text-center">
+            <div
+              key={c.title}
+              className="
+                rounded-3xl
+                bg-white
+                p-10
+                text-center
+                border
+                border-slate-200
+                shadow-[0_12px_36px_-28px_rgba(0,0,0,0.35)]
+                transition
+                hover:-translate-y-2
+                hover:border-green-300
+                hover:shadow-[0_28px_70px_-30px_rgba(16,185,129,0.45)]
+              "
+            >
               <h3 className="text-xl font-semibold text-green-900 mb-3">
                 {c.title}
               </h3>
-              <p className="text-sm text-slate-700">
+              <p className="text-sm text-slate-700 leading-relaxed">
                 {c.text}
               </p>
             </div>
@@ -196,15 +248,51 @@ export default function HomePage() {
       </section>
 
       {/* FB LINKS */}
-      <section className="py-16 bg-white border-t">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10 place-items-center">
-          {fbPages.map((p) => (
-            <a key={p.name} href={p.href} target="_blank" rel="noopener noreferrer">
-              <img src={p.logo} alt={p.name} className="h-16 w-16 object-contain" />
-            </a>
-          ))}
-        </div>
-      </section>
+<section className="py-16 bg-white border-t">
+  <div className="max-w-6xl mx-auto px-6">
+    <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 text-center mb-10">
+      Official Facebook Pages
+    </h2>
+
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10 place-items-center">
+      {fbPages.map((p) => (
+        <a
+          key={p.name}
+          href={p.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group text-center"
+        >
+          <div
+            className="
+              h-28 w-28
+              rounded-2xl
+              bg-white
+              border border-slate-200
+              flex items-center justify-center
+              shadow-sm
+              transition
+              group-hover:-translate-y-1
+              group-hover:border-green-300
+              group-hover:shadow-[0_20px_50px_-20px_rgba(16,185,129,0.45)]
+            "
+          >
+            <img
+              src={p.logo}
+              alt={p.name}
+              className="h-16 w-16 object-contain"
+            />
+          </div>
+
+          <p className="mt-4 text-sm font-semibold text-green-900 group-hover:text-green-700 transition">
+            {p.name}
+          </p>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
 
     </div>
   )
