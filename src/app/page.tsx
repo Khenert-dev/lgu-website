@@ -93,11 +93,7 @@ export default function HomePage() {
               </p>
 
               <div className="mt-10 flex gap-4">
-                <Link href="/services">
-                  <Button className="bg-green-700 hover:bg-green-800 text-white px-6 py-3">
-                    View Services
-                  </Button>
-                </Link>
+                
                 <Link href="/news">
                   <Button variant="outline" className="border-white text-white hover:bg-white/10 px-6 py-3">
                     News & Updates
