@@ -128,7 +128,7 @@ export default function HomePage() {
       </section>
 
       {/* NEWS */}
-      <section className="relative py-20 bg-gradient-to-b from-white to-green-50">
+      <section className="py-20 bg-gradient-to-b from-white to-green-50">
         <div className="max-w-7xl mx-auto px-6 space-y-12">
 
           <div className="flex items-end justify-between border-b border-green-200/70 pb-6">
@@ -158,14 +158,11 @@ export default function HomePage() {
                     rounded-3xl
                     bg-white
                     p-8
-                    border
-                    border-slate-200
-                    shadow-[0_10px_30px_-24px_rgba(0,0,0,0.35)]
-                    transition-all
-                    duration-300
+                    border border-slate-200
+                    transition-all duration-300
                     hover:-translate-y-2
-                    hover:border-green-300
-                    hover:shadow-[0_35px_90px_-35px_rgba(16,185,129,0.45)]
+                    hover:border-green-400
+                    hover:shadow-[0_18px_40px_-14px_rgba(16,185,129,0.45)]
                   "
                 >
                   <div className="absolute left-8 top-0 h-1 w-12 rounded-full bg-green-600" />
@@ -196,17 +193,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PAGE BREAKER */}
-      <section className="relative h-[35vh] overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/Bell.jpg')" }} />
-        <div className="absolute inset-0 bg-green-900/65" />
-        <div className="relative z-10 h-full flex items-center justify-center text-center px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white max-w-4xl">
-            Rooted in Culture. Driven by Progress.
-          </h2>
-        </div>
-      </section>
-
       {/* COMMUNITY */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
@@ -222,13 +208,11 @@ export default function HomePage() {
                 bg-white
                 p-10
                 text-center
-                border
-                border-slate-200
-                shadow-[0_12px_36px_-28px_rgba(0,0,0,0.35)]
-                transition
+                border border-slate-200
+                transition-all duration-300
                 hover:-translate-y-2
-                hover:border-green-300
-                hover:shadow-[0_28px_70px_-30px_rgba(16,185,129,0.45)]
+                hover:border-green-400
+                hover:shadow-[0_18px_40px_-14px_rgba(16,185,129,0.45)]
               "
             >
               <h3 className="text-xl font-semibold text-green-900 mb-3">
@@ -248,51 +232,49 @@ export default function HomePage() {
       </section>
 
       {/* FB LINKS */}
-<section className="py-16 bg-white border-t">
-  <div className="max-w-6xl mx-auto px-6">
-    <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 text-center mb-10">
-      Official Facebook Pages
-    </h2>
+      <section className="py-16 bg-white border-t">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 text-center mb-10">
+            Official Facebook Pages
+          </h2>
 
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10 place-items-center">
-      {fbPages.map((p) => (
-        <a
-          key={p.name}
-          href={p.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group text-center"
-        >
-          <div
-            className="
-              h-28 w-28
-              rounded-2xl
-              bg-white
-              border border-slate-200
-              flex items-center justify-center
-              shadow-sm
-              transition
-              group-hover:-translate-y-1
-              group-hover:border-green-300
-              group-hover:shadow-[0_20px_50px_-20px_rgba(16,185,129,0.45)]
-            "
-          >
-            <img
-              src={p.logo}
-              alt={p.name}
-              className="h-16 w-16 object-contain"
-            />
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10 place-items-center">
+            {fbPages.map((p) => (
+              <a
+                key={p.name}
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group text-center"
+              >
+                <div
+                  className="
+                    h-28 w-28
+                    rounded-2xl
+                    bg-white
+                    border border-slate-200
+                    flex items-center justify-center
+                    transition-all duration-300
+                    group-hover:-translate-y-1
+                    group-hover:border-green-400
+                    group-hover:shadow-[0_16px_36px_-12px_rgba(16,185,129,0.45)]
+                  "
+                >
+                  <img
+                    src={p.logo}
+                    alt={p.name}
+                    className="h-16 w-16 object-contain"
+                  />
+                </div>
+
+                <p className="mt-4 text-sm font-semibold text-green-900 group-hover:text-green-700 transition">
+                  {p.name}
+                </p>
+              </a>
+            ))}
           </div>
-
-          <p className="mt-4 text-sm font-semibold text-green-900 group-hover:text-green-700 transition">
-            {p.name}
-          </p>
-        </a>
-      ))}
-    </div>
-  </div>
-</section>
-
+        </div>
+      </section>
 
     </div>
   )

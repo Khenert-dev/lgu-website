@@ -31,9 +31,16 @@ export default async function NewsPage() {
   const rest = items.slice(1)
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-50 via-white to-green-100/40">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-green-100 via-green-50 to-emerald-100">
 
-      <section className="relative max-w-7xl mx-auto px-6 py-24 space-y-20">
+      {/* BACKGROUND */}
+      <div
+        className="absolute inset-0 -z-20 bg-cover bg-center opacity-[0.05]"
+        style={{ backgroundImage: "url(/images/capitol.png)" }}
+      />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-green-100/90 via-white/60 to-emerald-100/90" />
+
+      <section className="relative max-w-7xl mx-auto px-6 py-20 space-y-16">
 
         {/* HEADER */}
         <header className="text-center space-y-4">
@@ -50,33 +57,33 @@ export default async function NewsPage() {
           <Link href={`/news/${featured._id}`} className="group">
             <Card
               className="
-                relative
                 overflow-hidden
-                rounded-[36px]
-                bg-white
-                border border-slate-200/70
-                shadow-[0_18px_45px_-25px_rgba(0,0,0,0.35)]
+                rounded-[32px]
+                bg-white/85
+                backdrop-blur
+                border border-slate-200
                 transition-all duration-300
                 hover:-translate-y-1
-                hover:shadow-[0_40px_90px_-35px_rgba(16,185,129,0.45)]
+                hover:border-green-400
+                hover:shadow-[0_18px_40px_-14px_rgba(16,185,129,0.45)]
               "
             >
               {featured.image && (
-                <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-200">
+                <div className="relative w-full aspect-[5/3] overflow-hidden bg-slate-200">
                   <img
                     src={featured.image}
                     alt={featured.title}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
                 </div>
               )}
 
-              <div className="relative z-10 p-10 space-y-4 bg-white">
-                <h2 className="text-2xl md:text-3xl font-bold text-green-900 leading-tight">
+              <div className="p-8 space-y-3">
+                <h2 className="text-xl md:text-2xl font-bold text-green-900 leading-tight">
                   {featured.title}
                 </h2>
-                <p className="text-slate-700 leading-relaxed line-clamp-4 whitespace-pre-line">
+                <p className="text-slate-700 leading-relaxed line-clamp-3 whitespace-pre-line">
                   {featured.body}
                 </p>
               </div>
@@ -85,39 +92,39 @@ export default async function NewsPage() {
         )}
 
         {/* GRID */}
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((n) => (
             <Link key={n._id} href={`/news/${n._id}`} className="group">
               <Card
                 className="
-                  relative
                   h-full
                   overflow-hidden
-                  rounded-[32px]
-                  bg-white
-                  border border-slate-200/70
+                  rounded-[28px]
+                  bg-white/85
+                  backdrop-blur
+                  border border-slate-200
                   transition-all duration-300
-                  shadow-[0_14px_36px_-24px_rgba(0,0,0,0.3)]
                   hover:-translate-y-1
-                  hover:shadow-[0_32px_80px_-35px_rgba(16,185,129,0.4)]
+                  hover:border-green-400
+                  hover:shadow-[0_16px_36px_-14px_rgba(16,185,129,0.45)]
                 "
               >
                 {n.image && (
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-200">
+                  <div className="relative aspect-[3/2] w-full overflow-hidden bg-slate-200">
                     <img
                       src={n.image}
                       alt={n.title}
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
                   </div>
                 )}
 
-                <div className="relative z-10 p-6 space-y-3 bg-white">
-                  <h3 className="text-lg font-semibold text-green-900 leading-snug">
+                <div className="p-5 space-y-2">
+                  <h3 className="text-base font-semibold text-green-900 leading-snug line-clamp-2">
                     {n.title}
                   </h3>
-                  <p className="text-sm text-slate-700 leading-relaxed line-clamp-3 whitespace-pre-line">
+                  <p className="text-sm text-slate-700 leading-relaxed line-clamp-2 whitespace-pre-line">
                     {n.body}
                   </p>
                 </div>

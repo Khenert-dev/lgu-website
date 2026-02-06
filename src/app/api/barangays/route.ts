@@ -21,7 +21,10 @@ export async function POST(req: Request) {
     name: body.name,
     slug,
     description: body.description,
-    image: body.image,
+
+    images: body.images ?? [],
+    famousFor: body.famousFor ?? [],
+
     lat: body.lat,
     lng: body.lng,
     history: body.history ?? [],

@@ -5,23 +5,26 @@ const BarangaySchema = new Schema(
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     description: { type: String, required: true },
-    image: String,
+
+    images: { type: [String], default: [] },
+    famousFor: { type: [String], default: [] },
+
     lat: Number,
     lng: Number,
 
     history: [
       {
-        year: { type: String },
-        title: { type: String },
-        description: { type: String },
+        year: String,
+        title: String,
+        description: String,
       },
     ],
 
     officials: [
       {
-        name: { type: String },
-        position: { type: String },
-        photo: { type: String },
+        name: String,
+        position: String,
+        photo: String,
       },
     ],
   },

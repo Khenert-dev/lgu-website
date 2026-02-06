@@ -2,24 +2,24 @@
 
 export default function ContactPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-green-50 via-white to-green-100/40">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-green-100 via-green-50 to-emerald-100">
 
       {/* FLOATING CIRCLES */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
-          className="absolute top-24 left-16 h-40 w-40 rounded-full bg-green-400/30 blur-3xl"
+          className="absolute top-24 left-16 h-40 w-40 rounded-full bg-green-400/25 blur-3xl"
           style={{ animation: "float 12s ease-in-out infinite" }}
         />
         <div
-          className="absolute top-1/3 right-20 h-56 w-56 rounded-full bg-emerald-400/30 blur-3xl"
+          className="absolute top-1/3 right-20 h-56 w-56 rounded-full bg-emerald-400/25 blur-3xl"
           style={{ animation: "float 14s ease-in-out infinite" }}
         />
         <div
-          className="absolute bottom-32 left-1/4 h-32 w-32 rounded-full bg-green-300/30 blur-2xl"
+          className="absolute bottom-32 left-1/4 h-32 w-32 rounded-full bg-green-300/25 blur-2xl"
           style={{ animation: "float 10s ease-in-out infinite" }}
         />
         <div
-          className="absolute bottom-20 right-1/3 h-48 w-48 rounded-full bg-emerald-300/30 blur-3xl"
+          className="absolute bottom-20 right-1/3 h-48 w-48 rounded-full bg-emerald-300/25 blur-3xl"
           style={{ animation: "float 16s ease-in-out infinite" }}
         />
       </div>
@@ -54,34 +54,18 @@ export default function ContactPage() {
             <div
               key={item.title}
               className="
-                group relative
                 rounded-[32px]
-                bg-white
+                bg-white/85
+                backdrop-blur
                 p-8
-                border border-green-200/70
-                shadow-[0_18px_45px_-30px_rgba(0,0,0,0.25)]
+                border border-slate-200
                 transition-all duration-300
                 hover:-translate-y-2
-                hover:shadow-[0_30px_80px_-30px_rgba(16,185,129,0.45)]
+                hover:border-green-400
+                hover:shadow-[0_18px_40px_-14px_rgba(16,185,129,0.45)]
               "
             >
-              <div
-                className="
-                  pointer-events-none
-                  absolute -inset-1
-                  rounded-[36px]
-                  opacity-0
-                  blur-2xl
-                  transition
-                  group-hover:opacity-100
-                  bg-gradient-to-br
-                  from-green-400/30
-                  via-emerald-400/30
-                  to-green-500/30
-                "
-              />
-
-              <div className="relative z-10 space-y-3">
+              <div className="space-y-3">
                 <h2 className="text-lg font-semibold text-green-800">
                   {item.title}
                 </h2>
@@ -96,34 +80,18 @@ export default function ContactPage() {
         {/* LOCATION */}
         <section
           className="
-            group relative
             rounded-[40px]
-            bg-white
+            bg-white/85
+            backdrop-blur
             p-12
-            border border-green-200/70
-            shadow-[0_22px_60px_-35px_rgba(0,0,0,0.3)]
+            border border-slate-200
             transition-all duration-300
             hover:-translate-y-2
-            hover:shadow-[0_40px_100px_-40px_rgba(16,185,129,0.45)]
+            hover:border-green-400
+            hover:shadow-[0_20px_45px_-16px_rgba(16,185,129,0.45)]
           "
         >
-          <div
-            className="
-              pointer-events-none
-              absolute -inset-1
-              rounded-[44px]
-              opacity-0
-              blur-3xl
-              transition
-              group-hover:opacity-100
-              bg-gradient-to-br
-              from-green-400/30
-              via-emerald-400/30
-              to-green-500/30
-            "
-          />
-
-          <div className="relative z-10 space-y-4">
+          <div className="space-y-4">
             <h2 className="text-2xl font-semibold text-green-800">
               Visit Us
             </h2>

@@ -35,7 +35,10 @@ export async function PUT(
     {
       name: body.name,
       description: body.description,
-      image: body.image,
+
+      images: body.images ?? [],
+      famousFor: body.famousFor ?? [],
+
       lat: body.lat,
       lng: body.lng,
       history: body.history ?? [],

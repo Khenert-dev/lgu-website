@@ -36,15 +36,16 @@ export default async function NewsDetailPage({
   if (!item) notFound()
 
   return (
-    <main className="relative min-h-screen bg-gradient-to-b from-green-50 via-white to-green-100/40">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-green-100 via-green-50 to-emerald-100 text-slate-800">
 
-      {/* SOFT BACKGROUND */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-green-300/25 blur-3xl" />
-        <div className="absolute top-32 -right-32 h-[360px] w-[360px] rounded-full bg-emerald-300/25 blur-3xl" />
-      </div>
+      {/* BACKGROUND TEXTURE */}
+      <div
+        className="absolute inset-0 -z-20 bg-cover bg-center opacity-[0.05]"
+        style={{ backgroundImage: "url(/images/capitol.png)" }}
+      />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-green-100/90 via-white/60 to-emerald-100/90" />
 
-      <section className="relative max-w-4xl mx-auto px-6 py-28 space-y-14">
+      <section className="relative max-w-4xl mx-auto px-6 py-28 space-y-16">
 
         {/* BACK */}
         <Link
@@ -70,11 +71,12 @@ export default async function NewsDetailPage({
         {/* CONTENT CARD */}
         <Card
           className="
-            relative
             overflow-hidden
             rounded-[36px]
-            bg-white
-            shadow-[0_20px_60px_-35px_rgba(0,0,0,0.35)]
+            bg-white/85
+            backdrop-blur
+            border border-slate-200
+            shadow-[0_20px_45px_-20px_rgba(16,185,129,0.35)]
           "
         >
           {/* IMAGE */}

@@ -55,10 +55,18 @@ export default async function OfficesPage() {
   ])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 via-[#f7faf8] to-green-50">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-green-100 via-green-50 to-emerald-100">
+
+      {/* BACKGROUND TEXTURE */}
+      <div
+        className="absolute inset-0 -z-20 bg-cover bg-center opacity-[0.05]"
+        style={{ backgroundImage: "url(/images/capitol.png)" }}
+      />
+
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-green-100/90 via-white/60 to-emerald-100/90" />
 
       {/* ================= HEADER ================= */}
-      <section className="max-w-7xl mx-auto px-6 pt-20 pb-14 text-center space-y-5">
+      <section className="max-w-7xl mx-auto px-6 pt-24 pb-16 text-center space-y-6">
         <h1 className="text-3xl md:text-4xl font-extrabold text-green-800">
           Municipal Offices
         </h1>
@@ -69,47 +77,29 @@ export default async function OfficesPage() {
       </section>
 
       {/* ================= OFFICE CARDS ================= */}
-      <section className="max-w-7xl mx-auto px-6 pb-20">
+      <section className="max-w-7xl mx-auto px-6 pb-24">
         {offices.length === 0 ? (
           <p className="text-center text-slate-500 text-base">
             No offices published yet.
           </p>
         ) : (
-          <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-14 sm:grid-cols-2 lg:grid-cols-3">
             {offices.map((o) => (
               <Card
                 key={o._id}
                 className="
-                  group relative
-                  rounded-[36px]
-                  bg-white
+                  rounded-[32px]
+                  bg-white/80
+                  backdrop-blur
                   p-10
+                  border border-slate-200
                   transition-all duration-300
-                  shadow-[0_12px_30px_rgba(0,0,0,0.12)]
                   hover:-translate-y-2
-                  hover:shadow-[0_30px_80px_rgba(0,0,0,0.18)]
+                  hover:border-green-400
+                  hover:shadow-[0_18px_40px_-14px_rgba(16,185,129,0.45)]
                 "
               >
-                {/* GLOW LAYER */}
-                <div
-                  className="
-                    pointer-events-none
-                    absolute -inset-1
-                    rounded-[40px]
-                    opacity-0
-                    blur-2xl
-                    transition
-                    duration-300
-                    group-hover:opacity-100
-                    bg-gradient-to-br
-                    from-green-400/40
-                    via-emerald-400/30
-                    to-green-500/40
-                  "
-                />
-
-                {/* CONTENT */}
-                <div className="relative z-10 flex flex-col gap-4">
+                <div className="flex flex-col gap-4">
                   {o.image && (
                     <img
                       src={o.image}
@@ -134,10 +124,10 @@ export default async function OfficesPage() {
 
       {/* ================= MUNICIPAL INFO ================= */}
       {(info.mission || info.vision || info.history) && (
-        <section className="relative py-20">
-          <div className="absolute inset-0 bg-gradient-to-b from-green-100/40 to-white" />
+        <section className="relative py-24">
+          <div className="absolute inset-0 bg-gradient-to-b from-green-100/40 to-white/70" />
 
-          <div className="relative max-w-5xl mx-auto px-6 space-y-16">
+          <div className="relative max-w-5xl mx-auto px-6 space-y-18">
 
             <header className="text-center space-y-4">
               <h2 className="text-2xl md:text-3xl font-bold text-green-800">
@@ -167,18 +157,19 @@ function InfoBlock({ title, text }: { title: string; text: string }) {
   return (
     <Card
       className="
-        relative
-        rounded-[36px]
-        bg-white
-        p-10
-        shadow-[0_12px_30px_rgba(0,0,0,0.12)]
+        rounded-[32px]
+        bg-white/85
+        backdrop-blur
+        p-12
+        border border-slate-200
+        shadow-[0_16px_36px_-16px_rgba(16,185,129,0.35)]
       "
     >
       <h3 className="text-xl font-semibold text-green-800">
         {title}
       </h3>
-      <div className="my-4 h-1 w-12 rounded-full bg-green-600" />
-      <p className="text-base text-slate-700 leading-relaxed whitespace-pre-line">
+      <div className="my-5 h-1 w-14 rounded-full bg-green-600" />
+      <p className="text-base md:text-lg text-slate-700 leading-relaxed whitespace-pre-line">
         {text}
       </p>
     </Card>

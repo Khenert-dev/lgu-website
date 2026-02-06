@@ -45,7 +45,14 @@ export default async function BarangayPage({
   if (!barangay) notFound()
 
   return (
-    <main className="bg-white text-slate-800">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-green-100 via-green-50 to-emerald-100 text-slate-800">
+
+      {/* BACKGROUND TEXTURE */}
+      <div
+        className="absolute inset-0 -z-20 bg-cover bg-center opacity-[0.05]"
+        style={{ backgroundImage: "url(/images/capitol.png)" }}
+      />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-green-100/90 via-white/60 to-emerald-100/90" />
 
       {/* HERO */}
       {barangay.images && barangay.images.length > 0 && (
@@ -58,7 +65,7 @@ export default async function BarangayPage({
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/50" />
+                <div className="absolute inset-0 bg-black/55" />
               </div>
             ))}
           </div>
@@ -74,24 +81,37 @@ export default async function BarangayPage({
       )}
 
       {/* CONTENT */}
-      <div className="max-w-6xl mx-auto px-6 py-20 space-y-24">
+      <div className="max-w-6xl mx-auto px-6 py-24 space-y-28">
 
         {/* INTRO */}
-        <section className="grid gap-12 md:grid-cols-5">
+        <section className="grid gap-14 md:grid-cols-5">
           <div className="md:col-span-3 space-y-6">
             {!barangay.images && (
-              <h1 className="text-4xl font-extrabold text-green-900">
+              <h1 className="text-4xl md:text-5xl font-extrabold text-green-900">
                 {barangay.name}
               </h1>
             )}
 
-            <p className="text-lg text-slate-700 leading-relaxed whitespace-pre-line">
+            <p className="text-lg md:text-xl text-slate-700 leading-relaxed whitespace-pre-line">
               {barangay.description}
             </p>
           </div>
 
-          <Card className="md:col-span-2 rounded-2xl bg-slate-50 p-6 border border-slate-200">
-            <h3 className="text-sm font-semibold text-green-800 mb-3 uppercase tracking-wide">
+          <Card
+            className="
+              md:col-span-2
+              rounded-3xl
+              bg-white/85
+              backdrop-blur
+              p-8
+              border border-slate-200
+              transition-all duration-300
+              hover:-translate-y-1
+              hover:border-green-400
+              hover:shadow-[0_16px_36px_-14px_rgba(16,185,129,0.45)]
+            "
+          >
+            <h3 className="text-sm font-semibold text-green-800 mb-4 uppercase tracking-wide">
               Barangay Details
             </h3>
 
@@ -103,8 +123,8 @@ export default async function BarangayPage({
             )}
 
             {barangay.famousFor && barangay.famousFor.length > 0 && (
-              <div className="mt-4">
-                <p className="text-sm font-semibold text-green-700 mb-1">
+              <div className="mt-5">
+                <p className="text-sm font-semibold text-green-700 mb-2">
                   Known for
                 </p>
                 <ul className="list-disc list-inside text-sm text-slate-600 space-y-1">
@@ -119,19 +139,19 @@ export default async function BarangayPage({
 
         {/* HISTORY */}
         {barangay.history && barangay.history.length > 0 && (
-          <section className="space-y-12">
+          <section className="space-y-14">
             <SectionHeader title="History" />
 
-            <div className="relative border-l border-green-300/50 pl-8 space-y-10">
+            <div className="relative border-l border-green-400/50 pl-8 space-y-12">
               {barangay.history.map((h, i) => (
                 <div key={i}>
                   <p className="text-sm font-semibold text-green-700">
                     {h.year}
                   </p>
-                  <h3 className="text-lg font-semibold text-slate-900">
+                  <h3 className="text-lg md:text-xl font-semibold text-slate-900">
                     {h.title}
                   </h3>
-                  <p className="mt-2 text-slate-700">
+                  <p className="mt-2 text-slate-700 leading-relaxed">
                     {h.description}
                   </p>
                 </div>
@@ -142,14 +162,25 @@ export default async function BarangayPage({
 
         {/* OFFICIALS */}
         {barangay.officials && barangay.officials.length > 0 && (
-          <section className="space-y-12">
+          <section className="space-y-14">
             <SectionHeader title="Barangay Officials" />
 
-            <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
               {barangay.officials.map((o, i) => (
                 <Card
                   key={i}
-                  className="rounded-2xl bg-white p-6 text-center border border-slate-200 hover:shadow-md transition"
+                  className="
+                    rounded-3xl
+                    bg-white/85
+                    backdrop-blur
+                    p-8
+                    text-center
+                    border border-slate-200
+                    transition-all duration-300
+                    hover:-translate-y-1
+                    hover:border-green-400
+                    hover:shadow-[0_16px_36px_-14px_rgba(16,185,129,0.45)]
+                  "
                 >
                   {o.photo ? (
                     <img
@@ -175,10 +206,19 @@ export default async function BarangayPage({
 
         {/* MAP */}
         {barangay.lat != null && barangay.lng != null && (
-          <section className="space-y-10">
+          <section className="space-y-12">
             <SectionHeader title="Location" />
 
-            <Card className="rounded-2xl p-4 border border-slate-200">
+            <Card
+              className="
+                rounded-3xl
+                bg-white/85
+                backdrop-blur
+                p-4
+                border border-slate-200
+                shadow-[0_16px_36px_-14px_rgba(16,185,129,0.35)]
+              "
+            >
               <BarangayMap
                 lat={barangay.lat}
                 lng={barangay.lng}
