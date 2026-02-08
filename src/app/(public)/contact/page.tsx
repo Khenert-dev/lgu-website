@@ -1,5 +1,7 @@
 "use client"
 
+import AiChatbox from "@/components/sections/AiChatbox"
+
 export default function ContactPage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-green-100 via-green-50 to-emerald-100">
@@ -101,6 +103,11 @@ export default function ContactPage() {
               Philippines
             </p>
           </div>
+        </section>
+
+        {/* AI CONCIERGE */}
+        <section className="pt-6">
+          <AiChatbox />
         </section>
 
       </div>

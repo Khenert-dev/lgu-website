@@ -17,6 +17,13 @@ type MunicipalInfo = {
   history: string
 }
 
+type ServiceItem = {
+  id: string
+  title: string
+  summary: string
+  eta: string
+}
+
 async function getOffices(): Promise<Office[]> {
   const h = headers()
   const host = h.get("host")
@@ -24,6 +31,20 @@ async function getOffices(): Promise<Office[]> {
     process.env.NODE_ENV === "development" ? "http" : "https"
 
   const res = await fetch(`${protocol}://${host}/api/offices`, {
+    cache: "no-store",
+  })
+
+  if (!res.ok) return []
+  return res.json()
+}
+
+async function getServices(): Promise<ServiceItem[]> {
+  const h = headers()
+  const host = h.get("host")
+  const protocol =
+    process.env.NODE_ENV === "development" ? "http" : "https"
+
+  const res = await fetch(`${protocol}://${host}/api/services`, {
     cache: "no-store",
   })
 
@@ -49,9 +70,10 @@ async function getMunicipalInfo(): Promise<MunicipalInfo> {
 }
 
 export default async function OfficesPage() {
-  const [offices, info] = await Promise.all([
+  const [offices, info, services] = await Promise.all([
     getOffices(),
     getMunicipalInfo(),
+    getServices(),
   ])
 
   return (
@@ -121,6 +143,46 @@ export default async function OfficesPage() {
           </div>
         )}
       </section>
+
+      {/* ================= SERVICE QUICK LINKS ================= */}
+      {services.length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 pb-24">
+          <div className="rounded-[36px] border border-green-200 bg-white/80 backdrop-blur p-12 shadow-[0_20px_45px_-18px_rgba(16,185,129,0.4)]">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-green-700">
+                  Service Quick Links
+                </p>
+                <h2 className="mt-3 text-2xl md:text-3xl font-bold text-green-900">
+                  Start a request with the right office
+                </h2>
+                <p className="mt-2 text-sm md:text-base text-slate-600 max-w-2xl">
+                  Live data from the municipal service API to guide residents to the right office.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {services.map((service) => (
+                <Card
+                  key={service.id}
+                  className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm"
+                >
+                  <h3 className="text-base font-semibold text-green-800">
+                    {service.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                    {service.summary}
+                  </p>
+                  <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-green-700">
+                    ETA: {service.eta}
+                  </p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ================= MUNICIPAL INFO ================= */}
       {(info.mission || info.vision || info.history) && (
