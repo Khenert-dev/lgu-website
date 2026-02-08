@@ -82,6 +82,23 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white text-slate-800">
+      {/* PAUSE NOTICE */}
+      <section className="bg-amber-50 border-b border-amber-200">
+        <div className="max-w-7xl mx-auto px-6 py-4 text-sm text-amber-900 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-500" />
+            <div>
+              <p className="font-semibold">Project Paused</p>
+              <p className="text-amber-800/90">
+                The La Trinidad municipal website is currently on pause and will resume soon.
+              </p>
+            </div>
+          </div>
+          <span className="text-xs uppercase tracking-[0.2em] text-amber-700 font-semibold">
+            Updates to follow
+          </span>
+        </div>
+      </section>
 
       {/* HERO */}
       <section className="relative min-h-screen overflow-hidden">
