@@ -5,6 +5,11 @@ type ChatMessage = {
   content: string
 }
 
+type OpenAIMessage = {
+  role: "system" | "user" | "assistant"
+  content: string
+}
+
 export async function POST(req: Request) {
   const apiKey = process.env.OPENAI_API_KEY
 
@@ -25,6 +30,15 @@ export async function POST(req: Request) {
     )
   }
 
+  const systemMessage: OpenAIMessage = {
+    role: "system",
+    content:
+      "You are the official AI assistant for the Municipality of La Trinidad. " +
+      "Answer questions about municipal services, offices, barangays, events, and advisories. " +
+      "Be concise, friendly, and accurate. If the answer is not available, say so and suggest where to ask.",
+  }
+  const messagesForOpenAI: OpenAIMessage[] = [systemMessage, ...messages]
+
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -33,7 +47,7 @@ export async function POST(req: Request) {
     },
     body: JSON.stringify({
       model: "gpt-4o-mini",
-      messages,
+      messages: messagesForOpenAI,
       temperature: 0.4,
     }),
   })

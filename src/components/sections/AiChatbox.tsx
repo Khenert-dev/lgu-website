@@ -65,10 +65,10 @@ export default function AiChatbox() {
           AI Citizen Concierge
         </p>
         <h3 className="text-2xl font-semibold text-slate-900">
-          Ask about services, permits, or advisories
+          Ask about La Trinidad services, permits, or advisories
         </h3>
         <p className="text-sm text-slate-600">
-          Powered by a live AI endpoint for immediate answers and routing.
+          Powered by a live AI endpoint for immediate answers and routing to the right office.
         </p>
       </div>
 
@@ -96,7 +96,7 @@ export default function AiChatbox() {
       <div className="mt-5 flex flex-col gap-3 sm:flex-row">
         <input
           type="text"
-          placeholder="Ask about permits, schedules, or services..."
+          placeholder="Ask about permits, barangays, schedules, or services..."
           value={input}
           onChange={(event) => setInput(event.target.value)}
           className="flex-1 rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-800 focus:border-green-500 focus:outline-none"
