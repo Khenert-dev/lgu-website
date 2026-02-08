@@ -68,7 +68,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white text-slate-800">
 
       {/* HERO */}
-      <section className="relative h-screen overflow-hidden">
+      <section className="relative min-h-screen overflow-hidden">
         {heroImages.map((img, i) => (
           <img
             key={img}
@@ -80,19 +80,19 @@ export default function HomePage() {
         ))}
         <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/60 to-black/85" />
 
-        <div className="relative z-10 h-full flex items-center">
+        <div className="relative z-10 min-h-screen flex items-center py-16">
           <div className="max-w-7xl mx-auto px-6 w-full">
             <div className="max-w-3xl">
-              <h1 className="text-5xl md:text-6xl font-extrabold text-white leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight">
                 Municipality of <br /> La Trinidad
               </h1>
 
-              <p className="mt-6 text-lg md:text-xl text-slate-200 min-h-[3rem]">
+              <p className="mt-6 text-base sm:text-lg md:text-xl text-slate-200 min-h-[3rem]">
                 {typed}
                 <span className="inline-block w-[2px] h-6 bg-slate-200 ml-1 animate-pulse" />
               </p>
 
-              <div className="mt-10 flex gap-4">
+              <div className="mt-10 flex flex-col sm:flex-row gap-4">
                 
                 <Link href="/news">
                   <Button variant="outline" className="border-white text-white hover:bg-white/10 px-6 py-3">
@@ -112,8 +112,101 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* AI AUTOMATION */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center rounded-3xl border border-green-100 bg-gradient-to-br from-green-50 via-white to-white p-10">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-green-700">
+                AI Automation
+              </p>
+              <h2 className="mt-4 text-3xl sm:text-4xl font-extrabold text-green-900">
+                Smarter updates with an AI-powered assistant
+              </h2>
+              <p className="mt-4 text-base sm:text-lg text-slate-700">
+                Let AI surface the right information at the right time. Automated alerts and personalized
+                summaries keep residents updated on news, advisories, and emergency notices.
+              </p>
+              <ul className="mt-6 space-y-3 text-sm text-slate-700">
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-green-600" />
+                  Instant notifications for breaking advisories
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-green-600" />
+                  AI-curated weekly community summaries
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-green-600" />
+                  Personalized alerts for services you care about
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-green-600" />
+                  24/7 AI concierge for citizen questions
+                </li>
+              </ul>
+            </div>
+
+            <div className="rounded-3xl bg-white p-8 shadow-[0_20px_40px_-20px_rgba(16,185,129,0.4)] border border-slate-100">
+              <h3 className="text-xl font-semibold text-slate-900">
+                Enable AI updates
+              </h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Add your details and get AI-personalized alerts within minutes.
+              </p>
+              <form className="mt-6 space-y-4">
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    Full name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Juan Dela Cruz"
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-800 focus:border-green-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    Email or mobile number
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="you@example.com"
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-800 focus:border-green-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    AI topics
+                  </label>
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold">
+                    {["Weather", "Traffic", "Health", "Markets", "Events"].map((topic) => (
+                      <span
+                        key={topic}
+                        className="rounded-full border border-green-200 bg-green-50 px-3 py-1 text-green-800"
+                      >
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className="w-full rounded-2xl bg-green-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-800"
+                >
+                  Enable AI automation
+                </button>
+                <p className="text-xs text-slate-500">
+                  By submitting, you agree to receive AI-generated service updates.
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* PAGE BREAKER */}
-      <section className="relative h-[40vh] overflow-hidden">
+      <section className="relative h-[32vh] sm:h-[40vh] overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/Strawberry.jpg')" }} />
         <div className="absolute inset-0 bg-green-900/70" />
         <div className="relative z-10 h-full flex items-center justify-center text-center px-6">
@@ -127,7 +220,7 @@ export default function HomePage() {
       <section className="py-20 bg-gradient-to-b from-white to-green-50">
         <div className="max-w-7xl mx-auto px-6 space-y-12">
 
-          <div className="flex items-end justify-between border-b border-green-200/70 pb-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between border-b border-green-200/70 pb-6">
             <div>
               <h2 className="text-3xl md:text-4xl font-extrabold text-green-900">
                 News & Announcements
@@ -144,7 +237,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
             {news.map((n) => (
               <Link key={n._id} href={`/news/${n._id}`} className="group">
                 <div
